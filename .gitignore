@@ -1,5 +1,32 @@
-# Hidden macOS files
+# --------------------------
+# General things to ignore
+# --------------------------
+# Data (temporarily)
+data/*
+
+# Manuscript stuff
+manuscript/*.log
+manuscript/output/*.docx
+manuscript/output/*.html
+manuscript/output/*.pdf
+manuscript/output/*.tex
+manuscript/output/figures/*
+manuscript/pandoc/bin/vc*
+manuscript/*.ent
+
+# Analysis website stuff
+analysis/_site/*
+analysis/site_libs/*
+
+# Other folders
+admin/*
+manuscript/submissions/*
+
+# Miscellaneous
+*.~lock.*
 .DS_Store
+.dropbox
+Icon?
 
 # ------------------
 # R-specific stuff
