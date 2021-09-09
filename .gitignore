@@ -1,8 +1,6 @@
 # --------------------------
 # General things to ignore
 # --------------------------
-# Data (temporarily)
-data/*
 
 # Manuscript stuff
 manuscript/*.log
