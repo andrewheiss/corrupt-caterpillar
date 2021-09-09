@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-### Note on “corrupt caterpillar” project name
+### 👿🐛: Note on “corrupt caterpillar” project name
 
 Because project titles change all the time with revisions, rewriting,
 and peer review, we used [**codename**](http://svmiller.com/codename/)
@@ -31,16 +31,10 @@ Commons ([CC-BY-4.0](http://creativecommons.org/licenses/by/4.0/)).
 
 **Code:** All code is licensed under the [MIT License](LICENSE.md).
 
-## Contributions
+## Contributions and Code of Conduct
 
 We welcome contributions from everyone. Before you get started, please
 see our [contributor guidelines](CONTRIBUTING.md). Please note that this
-project is released with a [Contributor Code of Conduct](CONDUCT.md). By
-participating in this project you agree to abide by its terms.
-
-## Code of Conduct
-
-Please note that the Causal inference in NP and PA project is released
-with a [Contributor Code of
+project is released with a [Contributor Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
