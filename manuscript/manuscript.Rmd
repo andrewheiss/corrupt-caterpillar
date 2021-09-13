@@ -82,3 +82,10 @@ withr::with_dir(here::here(), {
 ```
 
 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua [@BaBerrettCoupet:2021]. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+
+Ideas:
+
+- Be like @Rohrer:2018 or @BlackwellGlynn:2018 and focus mostly on the DAG framework + a simulated example + an applied example from 1–2 previously published NVSQ or Voluntas papers - make it not super mathy, but still introduce $\operatorname{do}(\cdot)$ notation (like explain how $P(y \mid \operatorname{do}(x))$ is not the same as the observational $P(y \mid x)$, and that's why correlation ≠ causation)
+- …or, be like @BaBerrettCoupet:2021 and show a range of methods, like DAGs, RCTs, diff-in-diff, RD, and IV
+- …or do both and focus mostly on DAGs but also include a section that maps traditional econometrics methods to the DAG world?
