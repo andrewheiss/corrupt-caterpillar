@@ -31,6 +31,34 @@ codename_message()
 codename(type = "ubuntu", seed = 1022)
 ```
 
+## How to replicate
+
+You can either [download the compendium as a ZIP file](/archive/main.zip) or use GitHub to clone or fork the compendium repository (see the green "Code" button at the top of the GitHub page).
+
+We use the [**renv** package](https://rstudio.github.io/renv/articles/renv.html) to create a stable version-specific library of packages, and we use the [**targets** package](https://docs.ropensci.org/targets/) to manage all file dependencies and run the analysis. To reproduce the findings and re-run the analysis, do the following:
+
+1. Download and install these fonts:
+    - [Cochineal](https://fontesk.com/cochineal-typeface/)
+    - [Econ Sans](https://github.com/hrbrmstr/hrbrthemes/tree/master/inst/fonts/econ-sans)
+    - [Linux Libertine O](https://www.cufonfonts.com/font/linux-libertine-o) (also [here](https://sourceforge.net/projects/linuxlibertine/))
+    - [Libertinus Math](https://github.com/alerque/libertinus)
+    - [InconsolataGo](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/InconsolataGo)
+2. [Install R](https://cloud.r-project.org/) (and preferably [RStudio](https://www.rstudio.com/products/rstudio/download/#download)).
+    - If you're using macOS, [install XQuartz too](https://www.xquartz.org/), so that you have access to the Cairo graphics library
+3. Open `corrupt-caterpillar.Rproj` to open an [RStudio Project](https://r4ds.had.co.nz/workflow-projects.html).
+4. Make sure you have a working installation of LaTeX:
+    - *Easy-and-recommended way*: Install the [**tinytex** package](https://yihui.org/tinytex/) by running `install.packages("tinytex")` in the R console, then running `tinytex::install_tinytex()`
+    - *Easy-but-requires-huge-4+-GB-download way*: Download TeX Live ([macOS](http://www.tug.org/mactex/); [Windows](https://miktex.org/))
+5. If it's not installed already, R *should* try to install the **renv** package when you open the RStudio Project for the first time. If you don't see a message about package installation, install it yourself by running `install.packages("renv")` in the R console.
+6. Run `renv::restore()` in the R console to install all the required packages for this project.
+7. Run `targets::tar_make()` in the R console to automatically download all data files, process the data, run the analysis, and compile the paper and appendix.
+
+Running `targets::tar_make()` will create several helpful outputs:
+
+1. All project data in `data/`
+2. An analysis notebook website in `analysis/_site/index.html`
+3. PDF, HTML, and Word versions of the manuscript in `manuscript/output/`
+
 
 ## Licenses
 

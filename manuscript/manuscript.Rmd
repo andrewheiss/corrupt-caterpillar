@@ -25,7 +25,7 @@ title-page: true
 endnotes: false
 endfloat: false
 mainfont: Cochineal
-sansfont: Inter
+sansfont: Econ Sans Cnd
 author-note: >-
   Author note here
 correspondence: >-
