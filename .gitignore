@@ -26,6 +26,9 @@ manuscript/submissions/*
 .dropbox
 Icon?
 
+# Ignore all targets-related things
+_targets/
+
 # ------------------
 # R-specific stuff
 # ------------------
