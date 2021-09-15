@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.0",
+    "Version": "4.1.1",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -292,7 +292,7 @@
       "RemoteUsername": "EmilHvitfeldt",
       "RemoteRef": "HEAD",
       "RemoteSha": "9874b241fe47ed0c1b5a07b8788d48d0a9f5e5e3",
-      "Hash": "499a11993bd416a88cc33cb5ce1a5bc9"
+      "Hash": "8007822522881455c57a6f530e2d3ab6"
     },
     "evaluate": {
       "Package": "evaluate",
@@ -520,10 +520,10 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.33.8",
+      "Version": "1.34",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "6679b71bf9c7963d15115990566fb843"
+      "Hash": "aa958054ac6f0360926bb952ea302f0f"
     },
     "labeling": {
       "Package": "labeling",
