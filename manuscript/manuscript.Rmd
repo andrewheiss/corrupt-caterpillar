@@ -8,7 +8,7 @@ author:
   url: https://www.andrewheiss.com/
 - name: Meng Ye
   affiliation: Georgia State University
-  email: schaudhry@lclark.edu
+  email: mye2@student.gsu.edu
 date: "September 10, 2021"
 published: Drafting
 code-repo: "Access the code at <https://github.com/andrewheiss/corrupt-caterpillar>"
@@ -89,3 +89,69 @@ Ideas:
 - Be like @Rohrer:2018 or @BlackwellGlynn:2018 and focus mostly on the DAG framework + a simulated example + an applied example from 1–2 previously published NVSQ or Voluntas papers - make it not super mathy, but still introduce $\operatorname{do}(\cdot)$ notation (like explain how $P(y \mid \operatorname{do}(x))$ is not the same as the observational $P(y \mid x)$, and that's why correlation ≠ causation)
 - …or, be like @BaBerrettCoupet:2021 and show a range of methods, like DAGs, RCTs, diff-in-diff, RD, and IV
 - …or do both and focus mostly on DAGs but also include a section that maps traditional econometrics methods to the DAG world?
+
+More thoughts:
+
+- Take a similar approach to @BaBerrettCoupet:2021 and search top three nonprofit (also PA?) journals for mentions/uses of specific methods - make a graph of it
+- Provide a table of R and Stata commands at the end, like @BaBerrettCoupet:2021?
+- Mostly focus on DAGs and confounding, etc. - using DAGs to help with identification - identification is the main challenge of causal inference. You can do it with natural experiments, or you can do it with selection of observables driven by careful causal model and closing backdoors to isolate arrow. 
+- Give a @Rohrer:2018 -esque introduction to DAGs + identification, then show an example (simulated data? real data?), then show how econometrics tools can be mapped onto DAGs for identification (and summarize some of the results from diff-in-diff, RDD, and IV papers over the past decade?)
+
+
+
+Tentative outline maybe:
+
+
+
+
+# Causal inference in nonprofit studies
+
+The "causal revolution" / "credibility revolution" has been happening for the past decade in social science disciplines - important because of reasons
+
+How has the discipline of nonprofit studies embraced the causal revolution?
+
+Are there fears of the word "causation" and an emphasis on pure association?
+
+Nonprofit data is very observational - quantitative data from past X years in N journals relies on experimental data Y% of the time, and observational data Z% of the time. 
+
+In this paper, we provide a introductory primer / framework for approaching causal questions with observational data - accessible and approachable guide to nonprofit researchers and practitioners. The framework here is crucial for general academic research, policy analysis, and program evaluation, among other common types of nonprofit research.
+
+
+# Intro to DAGs
+
+## Paths and causal structures
+
+## Confounding specifically is the main issue with observational data
+
+Especially if it's unmeasured or unobservable…
+
+
+# Identification with DAGs
+
+## Adjustment and statistical control: blocking backdoor paths
+
+## How to adjust: stratification, including variable in regression model, matching, IPW
+
+## Stop controlling for everything
+
+Bad controls and colliders
+
+Table 2 fallacy + @KeeleStevensonElwert:2020 thing
+
+
+# Design-based causal inference with DAGs
+
+## Instrumental variables
+
+## Diff-in-diff
+
+## Regression discontinuity
+
+
+# Tools for researchers and practitioners
+
+Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pearl's stuff, Morgan and Winship?
+
+
+# Conclusion
+
