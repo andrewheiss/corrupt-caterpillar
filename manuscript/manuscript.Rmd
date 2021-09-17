@@ -220,6 +220,132 @@ Table 2 fallacy + @KeeleStevensonElwert:2020 thing
 
 # Design-based causal inference with DAGs
 
+The language of causal graphs, identification, and adjustment provide a universal grammar for discussing causal effects. Commonly used approaches in econometrics and other social science disciplines can be written as causal graphs (see Figure \@ref(fig:design-based-dags))
+
+```{r design-based-dags, fig.width=9, fig.height=6, fig.asp=NULL, fig.cap="Possible DAGs for common design-based experimental and quasi-experimental approaches to causal inference. Red arrows represent the identified and isolated relationship between treatment $x$ and outcome $y$. Square nodes represent statistical adjustment."}
+data_rct <- dagify(
+  Y ~ Z + X,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2)),
+  labels = c(X = "X = x"),
+  exposure = "X",
+  outcome = "Y"
+) %>% 
+  tidy_dagitty() %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs_np$red, "grey80"))
+
+rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status), size = 12) +
+  geom_dag_text(size = 4) +
+  geom_dag_text(aes(label = label),
+                      nudge_x = 0, nudge_y = 0.2) +
+  scale_color_manual(values = c(clrs_np$green, clrs_np$blue), 
+                     na.value = clrs_np$yellow, guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Randomized trial", 
+       subtitle = "Randomization deletes all arrows into X") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+data_iv <- dagify(Y ~ X + U,
+                  X ~ I + U,
+                  exposure = "X",
+                  outcome = "Y",
+                  latent = "U",
+                  coords = list(x = c(X = 1, Y = 3, U = 2, I = 0),
+                                y = c(X = 1, Y = 1, U = 2, I = 1))) %>% 
+  tidy_dagitty() %>% 
+  adjust_for(var = "I") %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs_np$red, "grey80"))
+
+iv <- ggplot(data_iv, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
+  geom_dag_text(size = 4) +
+  scale_color_manual(values = c(clrs_np$green, "grey80", clrs_np$blue), 
+                     na.value = clrs_np$yellow, guide = "none") +
+  scale_shape_manual(values = c(15, 19), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Instrumental variable", 
+       subtitle = "Find effect of instrument (I) on X, then find effect of (X | I) on Y") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+
+data_diff_diff <- dagify(Y ~ X + Time + Location,
+                         X ~ Time + Location,
+                         exposure = "X",
+                         outcome = "Y",
+                         coords = list(x = c(X = 1, Y = 3, Time = 2, Location = 2),
+                                       y = c(X = 1, Y = 1, Time = 2, Location = 0))) %>% 
+  tidy_dagitty() %>% 
+  adjust_for(var = c("Time", "Location")) %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs_np$red, "grey80"))
+
+diff_diff <- ggplot(data_diff_diff, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
+  geom_dag_text(data = filter(data_diff_diff, name %in% c("X", "Y")), size = 4) +
+  geom_dag_text(data = filter(data_diff_diff, name == "Location"), 
+                nudge_y = 0.37, size = 4) +
+  geom_dag_text(data = filter(data_diff_diff, name == "Time"), 
+                nudge_y = -0.37, size = 4) +
+  scale_color_manual(values = c(clrs_np$green, clrs_np$blue), 
+                     na.value = clrs_np$yellow, guide = "none") +
+  scale_shape_manual(values = c(15, 19), guide = "none") +
+  coord_cartesian(ylim = c(-0.05, 2.05)) +
+  labs(title = "Difference-in-differences", 
+       subtitle = "Adjust for both time (e.g., year) and location (e.g., country, state)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+
+data_rdd <- dagify(Y ~ X + Running + U,
+                   X ~ Threshold + U,
+                   Running ~ U,
+                   Threshold ~ Running,
+                   exposure = "X",
+                   outcome = "Y",
+                   latent = "U",
+                   coords = list(x = c(X = 1, Y = 4, Running = 3, Threshold = 2, U = 3),
+                                 y = c(X = 1, Y = 1, Running = 2, Threshold = 1.75, U = 3))) %>% 
+  tidy_dagitty() %>% 
+  adjust_for(var = c("Threshold", "Running")) %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs_np$red, "grey80"),
+         name = recode(name, "Running" = "Running\nvariable"))
+
+rdd <- ggplot(data_rdd, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
+  geom_dag_text(data = filter(data_rdd, name %in% c("X", "Y", "U")), size = 4) +
+  geom_dag_text(data = filter(data_rdd, name == "Running\nvariable"),
+                nudge_y = -0.47, size = 4, lineheight = 1) +
+  geom_dag_text(data = filter(data_rdd, name == "Threshold"),
+                nudge_y = -0.35, size = 4) +
+  scale_color_manual(values = c(clrs_np$green, "grey80", clrs_np$blue), 
+                     na.value = clrs_np$yellow, guide = "none") +
+  scale_shape_manual(values = c(15, 19), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 3.05)) +
+  labs(title = "Regression discontinuity", 
+       subtitle = "Adjust for both the running variable and the threshold") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+plot_econometrics <- ((rct | iv) / plot_spacer() / (diff_diff | rdd)) +
+  plot_layout(heights = c(0.49, 0.02, 0.49))
+plot_econometrics
+```
+
+
 ## Experiments
 
 ## Instrumental variables
