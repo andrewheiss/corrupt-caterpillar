@@ -25,7 +25,7 @@ title-page: true
 endnotes: false
 endfloat: false
 mainfont: Cochineal
-sansfont: Econ Sans Cnd
+sansfont: Assistant
 author-note: >-
   Author note here
 correspondence: >-
@@ -72,12 +72,16 @@ options(
 
 ```{r libraries-data, include=FALSE}
 library(tidyverse)
+library(patchwork)
+library(ggdag)
+library(dagitty)
 library(targets)
 library(kableExtra)
 library(here)
 
 withr::with_dir(here::here(), {
   # Load stuff from targets
+  source(tar_read(plot_funs))
 })
 ```
 
@@ -101,6 +105,81 @@ More thoughts:
 
 Tentative outline maybe:
 
+
+```{r dag-associations, fig.width=9, fig.height=2.75, fig.asp=NULL, fig.cap="Three types of relationships in DAGs"}
+data_confounder <- dagify(
+  Y ~ Z + X,
+  X ~ Z,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2))
+) %>% 
+  tidy_dagitty() %>% 
+  mutate(arrow_color = ifelse(name == "Z", clrs_np$orange, "grey80")) %>% 
+  mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
+
+confounder <- ggplot(data_confounder, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = node_color), size = 12) +
+  geom_dag_text(data = filter(data_confounder, name != "Z"), size = 4) +
+  geom_dag_text(data = filter(data_confounder, name == "Z"), color = "white", size = 4) +
+  scale_color_manual(values = c("grey80", clrs_np$orange), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Confounder", subtitle = "(Fork)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5, color = clrs_np$orange),
+        plot.subtitle = element_text(hjust = 0.5, color = clrs_np$orange))
+
+data_mediator <- dagify(
+  Y ~ X + Z,
+  Z ~ X,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2))
+) %>% 
+  tidy_dagitty() %>% 
+  mutate(arrow_color = case_when(
+    name == "Z" & to == "Y" ~ clrs_np$purple, 
+    name == "X" & to == "Z" ~ clrs_np$purple,
+    TRUE ~ "grey80")) %>% 
+  mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
+
+mediator <- ggplot(data_mediator, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = node_color), size = 12) +
+  geom_dag_text(data = filter(data_mediator, name != "Z"), size = 4) +
+  geom_dag_text(data = filter(data_mediator, name == "Z"), color = "white", size = 4) +
+  scale_color_manual(values = c("grey80", clrs_np$purple), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Mediator", subtitle = "(Chain)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5, color = clrs_np$purple),
+        plot.subtitle = element_text(hjust = 0.5, color = clrs_np$purple))
+
+data_collider <- dagify(
+  Y ~ X,
+  Z ~ X + Y,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2))
+) %>% 
+  tidy_dagitty() %>% 
+  mutate(arrow_color = ifelse(to == "Z", clrs_np$red, "grey80")) %>% 
+  mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
+
+collider <- ggplot(data_collider, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = node_color), size = 12) +
+  geom_dag_text(data = filter(data_collider, name != "Z"), size = 4) +
+  geom_dag_text(data = filter(data_collider, name == "Z"), color = "white", size = 4) +
+  scale_color_manual(values = c("grey80", clrs_np$red), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Collider", subtitle = "(Inverted fork)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5, color = clrs_np$red),
+        plot.subtitle = element_text(hjust = 0.5, color = clrs_np$red))
+
+combined_associations <- (confounder | plot_spacer() | mediator | plot_spacer() | collider) +
+  plot_layout(widths = c(0.32, 0.02, 0.32, 0.02, 0.32))
+combined_associations
+```
 
 
 
