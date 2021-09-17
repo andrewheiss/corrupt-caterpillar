@@ -1,0 +1,94 @@
+# ggplot themes -----------------------------------------------------------
+
+update_geom_defaults(ggdag:::GeomDagText,
+                     list(family = "Assistant", 
+                          fontface = "bold",
+                          color = "black"))
+
+#' theme_np
+#'
+#' A custom ggplot2 theme used throughout this project
+#'
+#' @param base_size base font size (default is 11)
+#' @param base_family base font family (default is Assistant)
+#'
+#' @export
+#'
+#' @examples
+#' library(ggplot2)
+#'
+#' ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+#'   geom_point() +
+#'   labs(x = "Engine displacement", y = "Highway miles per gallon",
+#'        title = "A standard graph about cars",
+#'        subtitle = "Heavier cars get lower mileage",
+#'        caption = "Source: A dataset included in ggplot2",
+#'        color = "Drive") +
+#'   theme_np()
+theme_np <- function(base_size = 11, base_family = "Assistant") {
+  theme_bw(base_size, base_family) + 
+    theme(plot.title = element_text(size = rel(1.4), face = "bold",
+                                    family = "Assistant"),
+          plot.subtitle = element_text(size = rel(1), face = "plain",
+                                       family = "Assistant Light"),
+          plot.caption = element_text(size = rel(0.8), color = "grey50", face = "plain",
+                                      family = "Assistant Light",
+                                      margin = margin(t = 10), hjust = 0),
+          plot.tag = element_text(size = rel(1.4), face = "bold",
+                                  family = "Assistant"),
+          panel.border = element_rect(color = "grey50", fill = NA, size = 0.15),
+          panel.spacing = unit(1, "lines"),
+          panel.grid.minor = element_blank(),
+          strip.text = element_text(size = rel(0.9), hjust = 0,
+                                    family = "Assistant", face = "bold"),
+          strip.background = element_rect(fill = "#ffffff", colour = NA),
+          axis.ticks = element_blank(),
+          axis.title = element_text(family = "Assistant SemiBold", face = "plain", 
+                                    size = rel(0.8)),
+          axis.title.x = element_text(margin = margin(t = 5)),
+          axis.text = element_text(family = "Assistant Light", face = "plain"),
+          legend.key = element_blank(),
+          legend.title = element_text(size = rel(0.8),
+                                      family = "Assistant SemiBold", face = "plain"),
+          legend.text = element_text(size = rel(0.8), 
+                                     family = "Assistant Light", face = "plain"),
+          legend.spacing = unit(0.1, "lines"),
+          legend.box.margin = margin(t = -0.25, unit = "lines"),
+          legend.margin = margin(t = 0),
+          legend.position = "bottom")
+}
+
+#' theme_np_dag
+#'
+#' A custom ggplot2 theme used for DAGs
+#'
+#' @param ... arguments passed to `theme_np()`
+#'
+#' @export
+#' @md
+#'
+#' @examples
+#' library(ggdag)
+#'
+#' ggdag(confounder_triangle()) +
+#'   theme_np_dag()
+theme_np_dag <- function(...) {
+  theme_np(...) + 
+    theme(axis.text = element_blank(), 
+          axis.title = element_blank(), 
+          axis.title.x = element_blank(), 
+          axis.ticks = element_blank(),
+          panel.grid = element_blank(), 
+          panel.border = element_blank(),
+          panel.background = element_blank())
+}
+
+
+# Colors ------------------------------------------------------------------
+
+# clrs_turbo <- viridisLite::turbo(6, begin = 0, end = 1)
+# clrs_turbo %>% scales::show_col()
+
+clrs_np <- viridisLite::turbo(6, begin = 0, end = 1) %>% 
+  purrr::set_names(c("purple", "blue", "green", "yellow", "orange", "red")) %>% 
+  as.list()

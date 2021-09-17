@@ -27,6 +27,9 @@ here_rel <- function(...) {fs::path_rel(here::here(...))}
 # Pipeline ----------------------------------------------------------------
 
 list(
+  
+  # Define helper functions
+  tar_target(plot_funs, here_rel("R", "graphics.R"), format = "file"),
 
   ## Manuscript targets ------------------------------------------------------
 
