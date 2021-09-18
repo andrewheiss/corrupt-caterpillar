@@ -1,4 +1,4 @@
-library(dplyr)
+suppressPackageStartupMessages(library(dplyr))
 library(purrr)
 library(stringr)
 library(bib2df)
