@@ -4,6 +4,11 @@
 % Disable all warnings issued by biblatex starting with "Since you are using the 'memoir' class..."
 \usepackage{silence}
 \WarningFilter{biblatex}{Since you are using the}
+% And disable the warnings about biblatex and biditools and Arabic
+\WarningFilter{biblatex}{File 'arabic-apa.lbx'}
+\WarningFilter{biblatex}{Language 'arabic'}
+\WarningFilter{biditools}{Patching `\enddocument'}
+
 % Not all fonts have fancy OpenType features like proportional and oldstyle
 % figures, so this suppresses fontspec's warnings when using those kinds of fonts
 \PassOptionsToPackage{quiet}{fontspec}
