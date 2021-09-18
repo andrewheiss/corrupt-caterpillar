@@ -86,12 +86,48 @@ theme_np_dag <- function(...) {
 
 # Colors ------------------------------------------------------------------
 
-# clrs_turbo <- viridisLite::turbo(6, begin = 0, end = 1)
-# clrs_turbo %>% scales::show_col()
+#' Nonprofit palette
+#' 
+#' Generate a palette of 6 colors from the viridis turbo palette
+#'
+#' @return A named list of colors
+#' @export
+#' @md
+#'
+#' @examples
+#' clrs_np <- np_palette()
+#' 
+#' # Access colors by name with $
+#' clrs_np$blue
+#' clrs_np$orange
+np_palette <- function() {
+  clrs <- viridisLite::turbo(6, begin = 0, end = 1) %>% 
+    purrr::set_names(c("purple", "blue", "green", "yellow", "orange", "red")) %>% 
+    as.list()
+  
+  class(clrs) <- append("palette", class(clrs))
+  return(clrs)
+}
 
-clrs_np <- viridisLite::turbo(6, begin = 0, end = 1) %>% 
-  purrr::set_names(c("purple", "blue", "green", "yellow", "orange", "red")) %>% 
-  as.list()
+
+#' Show a palette
+#'
+#' This is a wrapper for `scales::show_col()` that automatically plots a list of
+#' colors generated with `np_palette()`
+#'
+#' @param clrs color palette to show
+#' @param ... arguments passed to `scales::show_col()`
+#'
+#' @return
+#' @export
+#' @md
+#'
+#' @examples
+#' clrs_np <- np_palette()
+#' plot(clrs_np)
+plot.palette <- function(clrs, ...) {
+  scales::show_col(unlist(clrs), ...)
+}
 
 #' Convert colors to LaTeX RGB definitions
 #'
@@ -109,8 +145,8 @@ clrs_np <- viridisLite::turbo(6, begin = 0, end = 1) %>%
 #' @md
 #' 
 #' @example 
-#' get_latex_rgb(clrs)
-get_latex_rgb <- function(clrs = clrs_np) {
+#' get_latex_rgb()
+get_latex_rgb <- function(clrs = np_palette()) {
   clrs <- unlist(clrs)
   
   clrs_table <- tibble::enframe(x, name = "color_name", value = "hex") %>% 
@@ -119,10 +155,10 @@ get_latex_rgb <- function(clrs = clrs_np) {
     mutate(latex = glue::glue("\\definecolor{<<color_name>>}{RGB}{<<rgb>>}",
                               .open = "<<", .close = ">>"))
   
-  class(clrs_table) <- append("clrs", class(clrs_table))
+  class(clrs_table) <- append("color_table", class(clrs_table))
   clrs_table
 }
 
-print.clrs <- function(x) {
+print.color_table <- function(x) {
   cat(x$latex, sep = "\n")
 }
