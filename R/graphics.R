@@ -1,3 +1,12 @@
+# Windows fonts
+if (Sys.info()["sysname"] == "Windows") {
+  # Register these fonts if running R on Windows
+  windowsFonts(`Assistant` = windowsFont("Assistant"))
+  windowsFonts(`Assistant Light` = windowsFont("Assistant Light"))
+  windowsFonts(`Assistant SemiBold` = windowsFont("Assistant SemiBold"))
+}
+
+
 # ggplot themes -----------------------------------------------------------
 # Set default fonts for text-based geoms
 update_geom_defaults("text",

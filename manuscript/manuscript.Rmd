@@ -26,6 +26,10 @@ endnotes: false
 endfloat: false
 mainfont: Cochineal
 sansfont: Assistant
+monofont: '`r if (Sys.info()["sysname"] == "Windows") "InconsolataGo Nerd Font" else "InconsolataGo"`'
+ms_mainfont: '`r if (Sys.info()["sysname"] == "Windows") "Linux Libertine" else "Linux Libertine O"`'
+ms_sansfont: Assistant
+ms_monofont: '`r if (Sys.info()["sysname"] == "Windows") "InconsolataGo Nerd Font" else "InconsolataGo"`'
 author-note: >-
   Author note here
 correspondence: >-

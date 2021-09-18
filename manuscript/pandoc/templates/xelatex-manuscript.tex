@@ -44,10 +44,26 @@
 \usepackage{fontspec}
 \usepackage{xunicode}
 \defaultfontfeatures{Mapping=tex-text,Ligatures=TeX,Scale=MatchLowercase}
-\setmainfont{Linux Libertine O}
+$if(ms_mainfont)$
+\setmainfont[Numbers={Proportional,OldStyle}]{$ms_mainfont$}
+$else$
+\setmainfont[Numbers={Proportional,OldStyle}]{Linux Libertine O}
+$endif$
+$if(ms_sansfont)$
+\setsansfont{$ms_sansfont$}
+$else$
 \setsansfont{Source Sans Pro}
+$endif$
+$if(ms_monofont)$
+\setmonofont[Mapping=tex-ansi, Scale=MatchLowercase]{$ms_monofont$}
+$else$
 \setmonofont[Mapping=tex-ansi, Scale=MatchLowercase]{InconsolataGo}
+$endif$
+$if(ms_mathfont)$
+\setmathfont{$ms_mathfont$}
+$else$
 \setmathfont{Libertinus Math}
+$endif$
 
 
 % ---------------
