@@ -320,10 +320,11 @@ data_rdd <- dagify(Y ~ X + Running + U,
   adjust_for(var = c("Threshold", "Running")) %>% 
   node_status() %>% 
   mutate(arrow_color = ifelse(name == "X", clrs_np$red, "grey80"),
-         name = recode(name, "Running" = "Running\nvariable"))
+         name = recode(name, "Running" = "Running\nvariable"),
+         linetype = ifelse(name == "U" & to == "X", "21", "solid"))
 
 rdd <- ggplot(data_rdd, aes(x = x, y = y, xend = xend, yend = yend)) +
-  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_edges(aes(edge_colour = arrow_color, edge_linetype = linetype), edge_width = 1) +
   geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
   geom_dag_text(data = filter(data_rdd, name %in% c("X", "Y", "U")), size = 4) +
   geom_dag_text(data = filter(data_rdd, name == "Running\nvariable"),
