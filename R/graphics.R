@@ -92,3 +92,37 @@ theme_np_dag <- function(...) {
 clrs_np <- viridisLite::turbo(6, begin = 0, end = 1) %>% 
   purrr::set_names(c("purple", "blue", "green", "yellow", "orange", "red")) %>% 
   as.list()
+
+#' Convert colors to LaTeX RGB definitions
+#'
+#' Take a named list of hex colors and convert them to RGB values.
+#'
+#' The resulting output has the class `clrs` and will print only the LaTeX color
+#' definitions by default using `print.clrs()`
+#'
+#' @param clrs named list of hex colors
+#'
+#' @return A tibble with columns for the color name, hex code, red value, green
+#'   value, blue value, comma-separated RGB value, and a LaTeX color definition
+#'
+#' @export
+#' @md
+#' 
+#' @example 
+#' get_latex_rgb(clrs)
+get_latex_rgb <- function(clrs = clrs_np) {
+  clrs <- unlist(clrs)
+  
+  clrs_table <- tibble::enframe(x, name = "color_name", value = "hex") %>% 
+    bind_cols(as_tibble(t(col2rgb(x)))) %>%
+    mutate(rgb = paste(red, green, blue, sep = ", ")) %>%
+    mutate(latex = glue::glue("\\definecolor{<<color_name>>}{RGB}{<<rgb>>}",
+                              .open = "<<", .close = ">>"))
+  
+  class(clrs_table) <- append("clrs", class(clrs_table))
+  clrs_table
+}
+
+print.clrs <- function(x) {
+  cat(x$latex, sep = "\n")
+}
