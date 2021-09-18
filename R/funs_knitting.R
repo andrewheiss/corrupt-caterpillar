@@ -1,4 +1,4 @@
-library(dplyr)
+suppressPackageStartupMessages(library(dplyr))
 library(purrr)
 library(stringr)
 library(bib2df)
@@ -36,7 +36,8 @@ render_html <- function(input, output, csl, support_folder, ...) {
       self_contained = FALSE,
       theme = NULL,
       extra_dependencies = extra_dependencies,
-      lib_dir = support_folder
+      lib_dir = support_folder,
+      includes = list(before_body = "pandoc/colors-annotations.html")
     ),
     encoding = "UTF-8"
   )
@@ -58,8 +59,9 @@ render_pdf <- function(input, output, bibstyle, ...) {
                       "-V", "chapterstyle=hikma-article"),
       md_extensions = "+raw_tex+smart-autolink_bare_uris",
       toc = FALSE,
-      keep_tex = FALSE,
-      citation_package = "biblatex"
+      keep_tex = TRUE,
+      citation_package = "biblatex",
+      includes = list(in_header = "pandoc/colors-annotations.tex")
     ),
     encoding = "UTF-8"
   )
@@ -81,7 +83,8 @@ render_pdf_ms <- function(input, output, bibstyle, ...) {
       md_extensions = "+raw_tex+smart-autolink_bare_uris",
       toc = FALSE,
       keep_tex = FALSE,
-      citation_package = "biblatex"
+      citation_package = "biblatex",
+      includes = list(in_header = "pandoc/colors-annotations.tex")
     ),
     encoding = "UTF-8"
   )

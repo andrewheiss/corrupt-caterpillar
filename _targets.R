@@ -27,6 +27,9 @@ here_rel <- function(...) {fs::path_rel(here::here(...))}
 # Pipeline ----------------------------------------------------------------
 
 list(
+  
+  # Define helper functions
+  tar_target(plot_funs, here_rel("R", "graphics.R"), format = "file"),
 
   ## Manuscript targets ------------------------------------------------------
 
@@ -53,20 +56,20 @@ list(
                bib_file,
                support_folder = "output/html-support"),
              format = "file"),
-  # tar_target(pdf,
-  #            render_pdf(
-  #              input = main_manuscript,
-  #              output = here_rel("manuscript", "output", "manuscript.pdf"),
-  #              bibstyle = bibstyle,
-  #              bib_file),
-  #            format = "file"),
-  # tar_target(ms_pdf,
-  #            render_pdf_ms(
-  #              input = main_manuscript,
-  #              output = here_rel("manuscript", "output", "manuscript-ms.pdf"),
-  #              bibstyle = bibstyle,
-  #              bib_file),
-  #            format = "file"),
+  tar_target(pdf,
+             render_pdf(
+               input = main_manuscript,
+               output = here_rel("manuscript", "output", "manuscript.pdf"),
+               bibstyle = bibstyle,
+               bib_file),
+             format = "file"),
+  tar_target(ms_pdf,
+             render_pdf_ms(
+               input = main_manuscript,
+               output = here_rel("manuscript", "output", "manuscript-ms.pdf"),
+               bibstyle = bibstyle,
+               bib_file),
+             format = "file"),
   tar_target(docx,
              render_docx(
                input = main_manuscript,

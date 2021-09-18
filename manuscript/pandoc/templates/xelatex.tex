@@ -4,6 +4,11 @@
 % Disable all warnings issued by biblatex starting with "Since you are using the 'memoir' class..."
 \usepackage{silence}
 \WarningFilter{biblatex}{Since you are using the}
+% And disable the warnings about biblatex and biditools and Arabic
+\WarningFilter{biblatex}{File 'arabic-apa.lbx'}
+\WarningFilter{biblatex}{Language 'arabic'}
+\WarningFilter{biditools}{Patching `\enddocument'}
+
 % Not all fonts have fancy OpenType features like proportional and oldstyle
 % figures, so this suppresses fontspec's warnings when using those kinds of fonts
 \PassOptionsToPackage{quiet}{fontspec}
@@ -23,8 +28,28 @@
 % -------
 % FONTS
 % -------
+% mathtools has \underbracket and \overbracket with options for controlling 
+% height and thickness, but unicode-math provides its own option-free versions 
+% of these bracket macros. At one point it used to patch these macros and not 
+% override mathtools' commands, but it currently does not do that anymore 
+% (see https://github.com/wspr/unicode-math/issues/544). 
+%
+% We use unicode-math here so that we can use custom math fonts with 
+% \setmathfont{}, which then messes up bracket options. But there's a solution! 
+% We save mathtools' brackets  after loading mathtools, then load 
+% unicode-math which clobbers them, and then *after* \begin{document}, redifine 
+% the stored brackets (this part is key! According to 
+% https://tug.org/pipermail/lualatex-dev/2011-August/001295.html, the unicode 
+% table from unicode-math is executed after beginning the document, so 
+% redefining the brackets in the preamble won't work)
+
 % Math stuff
-\usepackage{amsmath, amssymb, amsfonts, amsthm}
+\usepackage{amsmath, amssymb, amsfonts, amsthm, mathtools}
+
+% Save mathtools' brackets and braces
+\let\normalunderbracket=\underbracket
+\let\normaloverbracket=\overbracket
+
 \usepackage{unicode-math}  % For custom math fonts
 
 % Custom fonts
@@ -317,8 +342,8 @@ $endif$
 % This has to come before loading biblatex
 \usepackage{polyglossia}
 \setdefaultlanguage{english}
-\setotherlanguage{arabic}
-\newfontfamily\arabicfont[Script = Arabic]{Amiri}
+% \setotherlanguage{arabic}
+% \newfontfamily\arabicfont[Script = Arabic]{Amiri}
 
 
 % ------------
@@ -421,6 +446,14 @@ $if(response)$
 $endif$
 
 
+% -------------------
+% STUFF FROM PANDOC
+% -------------------
+$for(header-includes)$
+$header-includes$
+$endfor$
+
+
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
 % ------------------------------------------------------------------------------
@@ -430,6 +463,10 @@ $endif$
 % ----------------
 
 \begin{document}
+
+% Restore mathtools' brackets *after* \begin{document}
+\let\underbracket=\normalunderbracket
+\let\overbracket=\normaloverbracket
 
 $if(chapterstyle)$
 \chapterstyle{$chapterstyle$}
@@ -498,11 +535,19 @@ $endif$
 
 $endif$
 
+$for(include-before)$
+$include-before$
+$endfor$
+
 $body$
 
 $if(biblatex)$
 \printbibliography[heading=subbibliography$if(reference-section-title)$, title=$reference-section-title$$endif$]
 $endif$
+$for(include-after)$
+$include-after$
+$endfor$
+
 $for(include-after)$
 $include-after$
 $endfor$
