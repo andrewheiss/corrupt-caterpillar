@@ -1,0 +1,2 @@
+Engine,Date,Condition ,Result_number,Bibfile_name
+ProQuest,9/18/2021,"(""fixed effects"" OR ""causal"" OR ""diff-in-diff"" OR ""difference in difference"" OR ""regression discontinuity"" OR ""instrumental variable"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",265,npo_top3_raw0918
