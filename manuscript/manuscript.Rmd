@@ -229,7 +229,6 @@ data_rct <- dagify(
   Y ~ Z + X,
   coords = list(x = c(X = 1, Y = 3, Z = 2),
                 y = c(X = 1, Y = 1, Z = 2)),
-  labels = c(X = "X = x"),
   exposure = "X",
   outcome = "Y"
 ) %>% 
@@ -241,8 +240,7 @@ rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
   geom_dag_point(aes(color = status), size = 12) +
   geom_dag_text(size = 4) +
-  geom_dag_text(aes(label = label),
-                      nudge_x = 0, nudge_y = 0.2) +
+  annotate(geom = "text", x = 1, y = 1.2, label = "X = x") +
   scale_color_manual(values = c(clrs_np$green, clrs_np$blue), 
                      na.value = clrs_np$yellow, guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
@@ -251,6 +249,7 @@ rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
   theme_np_dag() +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5))
+
 
 data_iv <- dagify(Y ~ X + U,
                   X ~ I + U,

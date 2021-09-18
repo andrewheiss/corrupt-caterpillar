@@ -1,4 +1,9 @@
 # ggplot themes -----------------------------------------------------------
+# Set default fonts for text-based geoms
+update_geom_defaults("text",
+                     list(family = "Assistant", 
+                          fontface = "bold",
+                          color = "black"))
 
 update_geom_defaults(ggdag:::GeomDagText,
                      list(family = "Assistant", 
