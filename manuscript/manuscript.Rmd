@@ -9,7 +9,7 @@ author:
 - name: Meng Ye
   affiliation: Georgia State University
   email: mye2@student.gsu.edu
-date: "September 10, 2021"
+date: "September 18, 2021"
 published: Drafting
 code-repo: "Access the code at <https://github.com/andrewheiss/corrupt-caterpillar>"
 abstract: >-
@@ -87,26 +87,58 @@ withr::with_dir(here::here(), {
 clrs_np <- np_palette()
 ```
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua [@BaBerrettCoupet:2021]. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+Introduction stuff…
+
+The "causal revolution" / "credibility revolution" has been happening for the past decade in social science disciplines - important because of reasons
+
+How has the discipline of nonprofit studies embraced the causal revolution?
+
+Are there fears of the word "causation" and an emphasis on pure association?
+
+Nonprofit data is very observational - quantitative data from past X years in N journals relies on experimental data Y% of the time, and observational data Z% of the time. 
+
+Similar to recent work by @BaBerrettCoupet:2021 and @Ma-etal:2021 and @Rohrer:2018, in this paper, we provide a introductory primer / framework for approaching causal questions with observational data - accessible and approachable guide to nonprofit researchers and practitioners. The framework here is crucial for general academic research, policy analysis, and program evaluation, among other common types of nonprofit research.
 
 
-Ideas:
+# Why care about causation in nonprofit studies? (MENG)
 
-- Be like @Rohrer:2018 or @BlackwellGlynn:2018 and focus mostly on the DAG framework + a simulated example + an applied example from 1–2 previously published NVSQ or Voluntas papers - make it not super mathy, but still introduce $\operatorname{do}(\cdot)$ notation (like explain how $P(y \mid \operatorname{do}(x))$ is not the same as the observational $P(y \mid x)$, and that's why correlation ≠ causation)
-- …or, be like @BaBerrettCoupet:2021 and show a range of methods, like DAGs, RCTs, diff-in-diff, RD, and IV
-- …or do both and focus mostly on DAGs but also include a section that maps traditional econometrics methods to the DAG world?
+Graph and analysis of causal stuff in top 3 here
 
-More thoughts:
+[@Samii:2016]
 
-- Take a similar approach to @BaBerrettCoupet:2021 and search top three nonprofit (also PA?) journals for mentions/uses of specific methods - make a graph of it
-- Provide a table of R and Stata commands at the end, like @BaBerrettCoupet:2021?
-- Mostly focus on DAGs and confounding, etc. - using DAGs to help with identification - identification is the main challenge of causal inference. You can do it with natural experiments, or you can do it with selection of observables driven by careful causal model and closing backdoors to isolate arrow. 
-- Give a @Rohrer:2018 -esque introduction to DAGs + identification, then show an example (simulated data? real data?), then show how econometrics tools can be mapped onto DAGs for identification (and summarize some of the results from diff-in-diff, RDD, and IV papers over the past decade?)
+> 941 - "Causal empiricism is associated with “identification strategy” research designs."
+
+> This is different from quantitative “pseudo-general pseudo-facts” that come from multiple regression 
+
+>> In quantitative research, pseudo-facts are statistical results that are interpreted erroneously in terms of their causal implications, and pseudo-general findings are ones that are erroneously described as applying to a more general class of units than is immediately warranted.
+
+Don't make unwarranted causal-ish statements, but also don't be afraid of the "c-word" [@Hernan:2018]
+
+Language can imply causality even if authors explicitly eschew causal language and identification strategies [@HaberWietenRohrer:2021]
 
 
+# Intro to DAGs (ANDREW)
 
-Tentative outline maybe:
+[@PearlMackenzie:2018; @MorganWinship:2014; @PearlGlymourJewell:2016]
 
+DAGs encode our understanding of the data generating process - what in the natural and social world leads to the treatment/exposure, the outcome, and both simultaneously. It represents a type of philosophical model of how the observed world works. Importantly, causal graphs also encode our assumptions of how the world works. 
+
+In addition to encoding our philosophy and theory of the data generating process, DAGs also serve as an important statistical tool for isolating or identifying causal quantities of interest. Identification strategy definition:
+
+> The central role of an identification strategy is to provide a logic for establishing that D is independent of potential values of Y, thus allowing the analyst to interpret observed associations as causal effects. [@KeeleStevensonElwert:2020]
+
+
+## A vocabulary for causal inference
+
+A grammar
+
+Paths and causal structures
+
+- Nodes - nodes can be unmeasurable, or even unobserved
+- Edges - Arrows indicate a relationship, or the passing of *statistical association* between nodes - intervening on one node leads to changes in another node - When two nodes are connected by an arrow, we are stating that there is an assumed causal relationship between those nodes; when there is no arrow between nodes, we are explicitly stating that there is no relationship between the two.
+- d-connection and d-separation - statistical association cannot pass between nodes, either because the arrows are drawn in a way that makes it so information does not link the two, or because conditioning/adjustment blocks the pathway
+- Acyclicity - can't get back to a node - represents flow of time - if things are cyclical, like hiring new staff $\leftrightarrow$ increased capacity, you can make these nodes time-based: hiring new staff_t → increased capacity_t → hiring new staff_t+1 → increased capacity_t+1
 
 ```{r dag-associations, fig.width=9, fig.height=2.75, fig.asp=NULL, fig.cap="Three types of relationships in DAGs"}
 data_confounder <- dagify(
@@ -183,48 +215,100 @@ combined_associations <- (confounder | plot_spacer() | mediator | plot_spacer() 
 combined_associations
 ```
 
+This stuff in Figure \@ref(fig:dag-associations): (@Elwert:2013 for forks, chains, inverted forks terminology)
+
+- Confounding - forks
+- Mediation - chains
+- Collision - inverted forks [@ElwertWinship:2014; @KnoxLoweMummolo:2020]
+
+Confounding is a major scary issue though - especially if it's unmeasured or unobservable…
 
 
-# Causal inference in nonprofit studies
+# Identification with DAGs (ANDREW)
 
-The "causal revolution" / "credibility revolution" has been happening for the past decade in social science disciplines - important because of reasons
+## Experimental causal effects vs. observational causal effects
 
-How has the discipline of nonprofit studies embraced the causal revolution?
+Potential outcomes notation
+ 
+$\operatorname{do}(x)$ notation
 
-Are there fears of the word "causation" and an emphasis on pure association?
+In experiments, the researcher has total control over assignment to treatment, which means all edges/arrows that might influence treatment can be removed. There is no confounding to worry about and we can measure the exact causal effect of X on Y. In potential outcomes language, you still can't see each individual's yes and no response, but you can average all the yeses and noes and get an average causal effect 
 
-Nonprofit data is very observational - quantitative data from past X years in N journals relies on experimental data Y% of the time, and observational data Z% of the time. 
+With observational data, we'd like to measure $\mathbf{E}(y \mid \operatorname{do}(x))$ but we can only actually see and measure $\mathbf{E}(y \mid x)$, and as shown in Equation \@ref(eq:correlation-not-causation), these two expressions are not the same. This is a formal version of the common phrase "correlation isn't causation":
 
-In this paper, we provide a introductory primer / framework for approaching causal questions with observational data - accessible and approachable guide to nonprofit researchers and practitioners. The framework here is crucial for general academic research, policy analysis, and program evaluation, among other common types of nonprofit research.
+\begin{equation}
+{\color{gray} \overbrace{{\color{orange} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}}_{\color{orange} \text{Causation}}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \textit{directly intervening} \\ \text{(or doing) $x$}}}}}
+\quad \neq \quad
+{\color{gray} \overbrace{\color{purple} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid x)} \vphantom{\frac{1}{2}}}_{\color{purple} \text{Correlation}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \text{accounting for} \\ \textit{observed } x}}}}
+(\#eq:correlation-not-causation)
+\end{equation}
 
+What we want to be able to do is transform the $\mathbf{E}(y \mid \operatorname{do}(x))$ expression into something without the $\operatorname{do}(x)$, or something *do*-free. A set of three systematic rules for analyzing and decomposing causal graphs known as *do*-calculus provide certain conditions under which we can treat an interventional $\operatorname{do}(\cdot)$ expression like an observed value instead. A complete exploration of these three rules of *do*-calculus go beyond the scope of this paper, but lots of resources like Pearl, that one textbook, other things in my blog post, etc. [@Pearl:2012; @Pearl:2019]
 
-# Intro to DAGs
+The most common derivation of the rules of *do*-calculus is an approach called "backdoor adjustment". By adjusting or controlling for nodes that open up backdoor paths between the treatment and outcome nodes, we can mathematically transform a $\operatorname{do}(\cdot)$ expression into something based solely on observational data. Formally, the backdoor adjustment formula is defined in Equation \@ref(eq:backdoor):
 
-## Paths and causal structures
+\begin{equation}
+{\color{gray} \overbrace{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}^{\substack{\text{Causal effect} \\ \text{of $x$ on $y$}}}}
+=
+{\color{gray} \underbrace{{\color{black} \sum_z}}_{\mathclap{\substack{\text{Sum across} \\ \text{all values of $z$}}}}}
+{\color{gray} \overbrace{\color{black} \mathbf{E} (y \mid x, z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{Conditional} \\ \text{mean of $y$,} \\ \text{given $x$ and $z$$\dots$}}}}}
+\times 
+{\color{gray} \overbrace{\color{black} \mathbf{P}(z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{$\dots$ weighted} \\ \text{by $z$}}}}}
+(\#eq:backdoor)
+\end{equation}
 
-## Confounding specifically is the main issue with observational data
+Put more simply, \@ref(eq:backdoor) demonstrates that we can remove the interventional $\operatorname{do}(x)$ from the left-hand side of the equation by controlling for (or conditioning on) all the confounders $z$ that open up a backdoor pathway between treatment and outcome. As a simplified illustration, suppose that the relationship between treatment and outcome is confounded only by a nonprofit's size, which is measured as either large or small. Applying this backdoor adjustment formula would entail finding average value of the outcome conditioned on the treatment among large nonprofits, multiplied by the proportion of large nonprofits, added to the average value of the outcome conditioned on the treatment among small nonprofits, multiplied by the proportion of small nonnprofits. The resulting sum would then be the unconfounded causal effect.
 
-Especially if it's unmeasured or unobservable…
+In practice, statistical adjustment rarely involves a single binary confounder. For instance, in the causal graph in Fig X, X, Y, and Z all open up backdoors between treatment and outcome, and all three would need to be adjusted for. We will provide a practical demonstration of more common adjustment strategies when there are multiple confounders in section X. At this point, what is important to note is that adjusting for confounding nodes allows us to isolate the single pathway between treatment and outcome. Because spurious statistical associations from other nodes have been blocked statistically, the relationship we care about is identified and we can talk about the *causal* effect of the treatment on the outcome.
 
+TODO: Plot of backdoor and frontdoor adjustment DAGs, but using nonprofit situations
 
-# Identification with DAGs
+A less common derivation of the rules of *do*-calculus is frontdoor adjustment, commonly used when confounding is unobserved and undertheorized and unmeasurable. Smoking genetics tar cancer thing - Bellemare paper example [@BellemareBloemWexler:2020] - frontdoor adjustment formula here? We do not provide a complete example here—see Bellemare for that—but again, what is most important here is that we can again mathematically transform a quantity with an interventional do(x) into a do-free quantity, meaning that we can make causal claims from observational data.
 
-## Adjustment and statistical control: blocking backdoor paths
-
-## How to adjust: stratification, including variable in regression model, matching, IPW
+The backdoor and frontdoor criteria are the most common applications of *do*-calculus because they are readily apparent in causal graphs—it is possible to see forks joining exposure and outcome and identify backdoors, or see measurable mediating nodes that could be used as front doors. In more complex DAGs, these backdoor and frontdoor shortcuts might not be readily visible. In that case, there are software packages that algorithmically work through the various rules of *do*-calculus to determine the set of nodes that need to be adjusted in order to isolate the x → y relationship. Not every DAG is identifiable; but any identifiable DAG can be identified.
 
 ## Stop controlling for everything
+
+In addition to identification, DAGs provide additional statistical insight and guidance regarding control variables or covariates in regression models
 
 Bad controls and colliders
 
 Table 2 fallacy + @KeeleStevensonElwert:2020 thing
 
+Post-treatment control bias - cite that one paper by Brendan Nyhan - DAGs make it obvious which nodes are post-treatment, since they appear after the treatment node in the causal chain in the graph
 
-# Design-based causal inference with DAGs
 
+# How to adjust (MENG AND ANDREW)
+
+TODO: Use simulated data based on a DAG that has a mediator, collider, and a bunch of confounders
+
+TODO: Replicate a study + draw a DAG for it + use IPW to close back doors
+
+## Stratification
+
+## Regression
+
+## Matching 
+
+Matching creates entirely new treatment/control populations
+
+## IPW
+
+IPW creates comparable pseudo populations
+
+MAYBE: Make an image with little shaded people showing how matching and IPW work, similar to Torres:2020 (maybe with https://github.com/propublica/weepeople ?)
+
+## Other methods?
+
+Briefly mention other methods, like marginal structural models [@BlackwellGlynn:2018]?
+
+
+# Design-based causal inference with DAGs (ANDREW AND MENG)
+
+[@AngristPischke:2009; @AngristPischke:2015]
 The language of causal graphs, identification, and adjustment provide a universal grammar for discussing causal effects. Commonly used approaches in econometrics and other social science disciplines can be written as causal graphs (see Figure \@ref(fig:design-based-dags))
 
-```{r design-based-dags, fig.width=9, fig.height=6, fig.asp=NULL, fig.cap="Possible DAGs for common design-based experimental and quasi-experimental approaches to causal inference. Red arrows represent the identified and isolated relationship between treatment $x$ and outcome $y$. Square nodes represent statistical adjustment."}
+```{r design-based-dags, fig.width=9, fig.height=6, fig.asp=NULL, fig.cap="Possible DAGs for common design-based experimental and quasi-experimental approaches to causal inference. Red arrows represent the identified and isolated relationship between treatment $x$ and outcome $y$. Square nodes represent statistical adjustment.", warning=FALSE}
 data_rct <- dagify(
   Y ~ Z + X,
   coords = list(x = c(X = 1, Y = 3, Z = 2),
@@ -347,20 +431,41 @@ plot_econometrics <- ((rct | iv) / plot_spacer() / (diff_diff | rdd)) +
 plot_econometrics
 ```
 
+For each of these:
+
+1. Sort explanation of what they require, how they work
+2. Explanation of how that connects to the DAG and how the graph reveals the identification strategy
+3. Point to some nonprofit-related papers that use these
 
 ## Experiments
 
+No need to control for a ton of things in an RCT precisely because the arrows into X get deleted. No need to worry about perfect balance checks because the researcher has control over and understands the data generating process and assignment to treatment. Look at that one knitted Rmd on RCT FAQs: https://macartan.github.io/i/notes/rct_faqs.html
+
 ## Instrumental variables
+
+IVs have to meet the exclusion restriction - the instrument can only influence the outcome through the treatment. DAGs make this assumption very clear. There cannot be an arrow connecting the instrument to the outcome. DAGs also inform the exogeneity assumption—no other nodes in the graph can feed into the instrument node
+
+It's like frontdoor adjustment (https://www.stat.cmu.edu/~cshalizi/402/lectures/23-causal-estimation/lecture-23.pdf) - Really we're finding the causal effect of I on X, then X on Y, generally through 2SLS
 
 ## Diff-in-diff
 
+Time / location, TWFE stuff
+
 ## Regression discontinuity
 
+Threshold/cutpoint
 
-# Tools for researchers and practitioners
+Adjusting for the threshold and only looking at data right around it makes it so that we can treat the sample as if it were random (by assumption), which then means we can delete any arrows going into X just like an RCT
+
+Cite Nick's *The Effect* - refer to his website with the DAGs and animations
+
+
+# Tools for researchers and practitioners (BOTH)
 
 Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pearl's stuff, Morgan and Winship?
 
+[@Huntington-Klein:2021; @Cunningham:2021]
 
-# Conclusion
+
+# Conclusion (BOTH)
 
