@@ -37,7 +37,9 @@ package](https://docs.ropensci.org/targets/) to manage all file
 dependencies and run the analysis. To reproduce the findings and re-run
 the analysis, do the following:
 
-1.  Download and install these fonts:
+1.  Download and install these fonts (if you’re using Windows, make sure
+    you right click on the font files and choose “Install for all users”
+    when installing these fonts):
     -   [Cochineal](https://fontesk.com/cochineal-typeface/)
     -   [Assistant](https://fonts.google.com/specimen/Assistant)
     -   [Linux Libertine
@@ -45,9 +47,6 @@ the analysis, do the following:
         [here](https://sourceforge.net/projects/linuxlibertine/))
     -   [Libertinus Math](https://github.com/alerque/libertinus)
     -   [InconsolataGo](https://github.com/ryanoasis/nerd-fonts/tree/master/patched-fonts/InconsolataGo)
-        -   If you’re using Windows, make sure you right click on the
-            font files and choose “Install for all users” when
-            installing these fonts
 2.  [Install R](https://cloud.r-project.org/) (and preferably
     [RStudio](https://www.rstudio.com/products/rstudio/download/#download)).
     -   If you’re using macOS, [install XQuartz
@@ -65,7 +64,8 @@ the analysis, do the following:
         `install.packages("tinytex")` in the R console, then running
         `tinytex::install_tinytex()`. The first time you compile a PDF
         might require an extra minute or so while **tinytex** installs
-        some missing LaTeX packages like csquotes, mathools, and others
+        some missing LaTeX packages like csquotes, mathools, and others,
+        but after that, it’ll go fast from then on.
     -   *Easy-but-requires-huge-4+-GB-download way*: Download TeX Live
         ([macOS](http://www.tug.org/mactex/);
         [Windows](https://miktex.org/))
