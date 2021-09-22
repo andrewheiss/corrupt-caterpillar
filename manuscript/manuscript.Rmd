@@ -443,7 +443,7 @@ For each of these:
 
 ## Experiments
 
-No need to control for a ton of things in an RCT precisely because the arrows into X get deleted. No need to worry about perfect balance checks because the researcher has control over and understands the data generating process and assignment to treatment. Look at that one knitted Rmd on RCT FAQs: https://macartan.github.io/i/notes/rct_faqs.html
+No need to control for a ton of things in an RCT precisely because the arrows into X get deleted. No need to worry about perfect balance checks because the researcher has control over and understands the data generating process and assignment to treatment. Look at that one knitted Rmd on RCT FAQs: https://macartan.github.io/i/notes/rct_faqs.html - CONSORT also says to stop doing balance tests - only really need to control for things that might be predictive (https://twitter.com/statsepi/status/1115902270888128514?s=21), but theoretically anything that influences the allocation to treatment is taken care of by randomization.
 
 ## Instrumental variables
 
