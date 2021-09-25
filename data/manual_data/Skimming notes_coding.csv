@@ -1,0 +1,21 @@
+﻿number,first_author_name,year,journal ,title,topic ,data_type,subject_group,model,causal_language,explicit_causal_claim,implicity_causal_claim,non_causal_claim
+1,Matsunaga,2010,Voluntas,What Determines the Size of the Nonprofit Sector?: A Cross-Country Analysis of the Government Failure Theory,sector size,cross-sectional,education and health sector by country,one-way fixed effect,determine,NA,rational explanation,NA
+2,Nashrent,2011,Voluntas,"The Influence of Commitment, Trust, Satisfaction, and Involvement on Donor Retention",donor retention,cross-sectional,individual donor,partial least square,influence,NA,NA,only longitudinal analysis can claim causal
+3,Cadena-Roa,2012,Voluntas,The Influences of Religious Attitudes on Volunteering,performance,cross-sectional,association,tobit and logit,influence,NA,NA,need longitudinal data to claim causal
+4,,,,,,,,,,,,
+5,,,,,,,,,,,,
+6,,,,,,,,,,,,
+7,,,,,,,,,,,,
+8,,,,,,,,,,,,
+9,,,,,,,,,,,,
+10,,,,,,,,,,,,
+11,,,,,,,,,,,,
+12,,,,,,,,,,,,
+13,,,,,,,,,,,,
+14,,,,,,,,,,,,
+15,,,,,,,,,,,,
+16,,,,,,,,,,,,
+17,,,,,,,,,,,,
+18,,,,,,,,,,,,
+19,,,,,,,,,,,,
+20,,,,,,,,,,,,
