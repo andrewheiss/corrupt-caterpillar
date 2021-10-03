@@ -1,11 +1,16 @@
-Database,Date,Condition ,Filters,Result_number,Voluntas_count,NVSQ_count,NML_count,Bibfile_name,Query link
-ProQuest,9/18/2021,"(""fixed effects"" OR ""causal"" OR ""diff-in-diff"" OR ""difference in difference"" OR ""regression discontinuity"" OR ""instrumental variable"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",2010-2021,265,NA,NA,NA,npo_top3_raw0918,NA
-ProQuest,10/2/2021,"(""fixed effects"" OR ""two-way"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",Scholarly Journals AND 2010-2021,81,72,6,3,NA,NA
-Web of Science,10/2/2021,"""fixed effects"" or ""two-way"" (ALL Fields) and nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership (Publication Titles)",2010-2021,14,7,7,0,NA,https://www.webofscience.com/wos/woscc/summary/4c061906-f4c6-40ce-8406-a86e6c2fe389-0b0337d9/relevance/1
-Merged ,10/2/2021,"""fixed effects"" OR ""two-way, npo 3 journals",2010-2021,87,77,7,3,fixed effect or two way npo3 1002,NA
-ProQuest,10/2/2021,"(experiment OR  ""randomized controlled trial"" OR ""RCT"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",Scholarly Journals AND 2010-2021,751,,,,NA,
-ProQuest,10/2/2021,"(""randomized controlled trial"" OR ""RCT"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",Scholarly Journals AND 2010-2021,9,9,0,0,NA,
-ProQuest,10/2/2021,"ab(experiment OR ""randomized controlled trial"" OR ""RCT"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",,43,23,7,13,NA,
-Web of Science,10/2/2021,"experiment OR  ""randomized controlled trial"" OR ""RCT"" (ALL Fields) and nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership (Publication Titles)",2010-2021,53,16,37,0,NA,https://www.webofscience.com/wos/woscc/summary/601f1ca6-0b77-44f9-82bf-687845d6e253-0b03d57c/relevance/1
-Merged ,10/2/2021,"experiment| randomized controlled trial | RCT, npo 3 journals",2010-2021,71,27,37,7,experiment or RCT npo3 1002,
-,,,,,,,,,
+Database,Date,Condition ,Filters,Result_number,Voluntas_count,NVSQ_count,NML_count,Bibfile_name,Query link,Note
+ProQuest,9/18/2021,"(""fixed effects"" OR ""causal"" OR ""diff-in-diff"" OR ""difference in difference"" OR ""regression discontinuity"" OR ""instrumental variable"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",2010-2021,265,NA,NA,NA,npo_top3_raw0918,NA,
+ProQuest,10/2/2021,"(""fixed effects"" OR ""two-way"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",Scholarly Journals AND 2010-2021,81,72,6,3,NA,NA,
+Web of Science,10/2/2021,"""fixed effects"" or ""two-way"" (ALL Fields) and nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership (Publication Titles)",2010-2021,14,7,7,0,NA,https://www.webofscience.com/wos/woscc/summary/4c061906-f4c6-40ce-8406-a86e6c2fe389-0b0337d9/relevance/1,
+Merged ,10/2/2021,"""fixed effects"" OR ""two-way, npo 3 journals",2010-2021,87,77,7,3,fixed effect or two way npo3 1002,NA,
+ProQuest,10/2/2021,"(experiment OR  ""randomized controlled trial"" OR ""RCT"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",Scholarly Journals AND 2010-2021,751,,,,NA,,
+ProQuest,10/2/2021,"(""randomized controlled trial"" OR ""RCT"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",Scholarly Journals AND 2010-2021,9,9,0,0,NA,,
+ProQuest,10/2/2021,"ab(experiment OR ""randomized controlled trial"" OR ""RCT"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",,43,23,7,13,NA,,
+Web of Science,10/2/2021,"experiment OR  ""randomized controlled trial"" OR ""RCT"" (ALL Fields) and nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership (Publication Titles)",2010-2021,53,16,37,0,NA,https://www.webofscience.com/wos/woscc/summary/601f1ca6-0b77-44f9-82bf-687845d6e253-0b03d57c/relevance/1,
+Merged ,10/2/2021,"experiment| randomized controlled trial | RCT, npo 3 journals",2010-2021,71,27,37,7,experiment or RCT npo3 1002,,
+ProQuest,10/2/2021,"(""causal graph"" OR ""directed acyclic graph"" OR ""Pearl"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",2010-2021,5,5,0,0,NA,,all pearl hits are relavent
+ProQuest,10/2/2021,"(""causal graph"" OR ""directed acyclic graph"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",2010-2021,0,0,0,,NA,,
+Web of Science,10/2/2021,,2010-2022,,,,,,,
+ProQuest,10/2/2021,"(""instrumental variable"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",,9,8,1,0,,,
+ProQuest,10/2/2021,"(""propensity score"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",2010-2023,13,10,2,1,,,
+ProQuest,10/3/2021,"(""inverse propensity weighting"") AND pub(nonprofit AND voluntary sector quarterly OR voluntas OR nonprofit management AND leadership)",2010-2024,0,0,0,0,,,
