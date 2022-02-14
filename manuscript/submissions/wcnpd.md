@@ -8,12 +8,18 @@ author:
 - name: Meng Ye
   affiliation: Georgia State University
   email: mye2@gsu.edu
-date: "February 6, 2022"
+date: "February 14, 2022"
 bibliography: "../bibliography.bib"
 csl: "../pandoc/csl/apa.csl"
 ---
 
-# Start Taking about the C-Word: A Guide for Design-based Causal Inference with DAGs in Nonprofit Studies
+# Getting Causation Right: A Guide to Observational Causal Inference in Nonprofit Studies
+
+## Shrunken down abstract for WCNPD
+
+Discovering causal relationships and testing theoretical mechanisms is a core endeavor of social science. Randomized experiments have long served as a gold standard for making valid causal inferences, but most of the data social scientists work with is observational and non-experimental. However, with newer methodological developments in economics, political science, epidemiology, and other disciplines, an increasing number of studies in social science make causal claims with observational data. As a newer interdisciplinary field, however, nonprofit studies has lagged behind other disciplines in its use of observational causal inference. In this paper, we present a hands-on introduction and guide to design-based observational causal inference methods. We first review and categorize all studies making causal claims in top nonprofit studies journals over the past decade to illustrate the field’s current of experimental and observational approaches to causal inference. We then introduce a framework for modeling and identifying causal processes using directed acyclic graphs (DAGs) and provide a walk-through of the assumptions and procedures for making inferences with a range of different methods, including matching, inverse probability weighting, difference-in-differences, regression discontinuity designs, and instrumental variables. We illustrate each approach with synthetic and empirical examples and provide sample R and Stata code for implementing these methods. We conclude by encouraging scholars and practitioners to make more careful and explicit causal claims in their observational empirical research, collectively developing and improving quantitative work in the broader field of nonprofit studies.
+
+
 
 ## Abstract
 
