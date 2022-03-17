@@ -1,0 +1,21 @@
+﻿Column Names,Explanation
+caterpillar_id,id assigned in this project starting from 101
+doi,article doi link (number only can be extracted from this column)
+journal ,journal title name
+first_author_name,last name of the first author or sole author
+year,publication year 
+title,article title 
+topic ,research topic coded by author
+data_type,longitunial or cross-sectional 
+data_source,primary or secondary and from survey or 990 or others
+experimental,Dummy indication experimental or observational 
+model,research method used extracted by author from the article
+causal_wording,"Dummy for using direct wording of ""causation"", ""causal"", or ""causality"" to describe the nature of the study"
+effect_wording,"Dummy for using the wording of ""effect"""
+predict_wording,"Dummy for using the wording of ""predict"""
+determinant_wording,"Dummy for using the wording of ""determinant"""
+impact_wording,"Dummy for using the wording of ""impact"""
+influence_wording,"Dummy for using the wording of ""influence"""
+explicit_causal_claim,"dummy, 1 for explictly claiming to be a fully valid causal study"
+implicity_causal_claim,"dummy, 1 for indicating somewhere on a spectrum of correlation to causation, e.g.""making better causational inference, but could be improved by somehow"""
+non_causal_claim,"dummy, 1 for explictly negate making causal claim"

@@ -38,12 +38,26 @@ Rearch_No,Database,Date,Condition_replicable,Condition_short,time_range,Result_n
 36,Web of Science,2/26/2022,NA,JPART + npo,2010-2020,,,,,,29,,,Wos_jpart_npo_sifted_0226.bib,NA,sifted true npo articles
 37,Web of Science,3/3/2022,"(ALL=(nonprofit OR ""non-profit"" OR ""not-for-profit"" OR ""NGO"" OR ""volunteer"" OR ""civil society"" OR ""third sector"" OR ""charity"" OR ""charitable"" OR ""philanthropy"" OR ""social enterprise"" OR ""social sector"" OR ""donor"")) AND SO=(PUBLIC ADMINISTRATION REVIEW)",PAR + npo,2010-2020,,,,,139,,,,,https://www.webofscience.com/wos/woscc/summary/eadf79b7-a826-43a6-9bf3-4d34a4421fa0-275fbe55/relevance/1,
 38,Web of Science,3/4/2022,NA,PAR + npo,2010-2020,,,,,69,,,,,,"sifted excluding book reviews, literatur reviews and articles that of little relevance to nonprofit research"
-39,ProQuest,3/5/2022,"(ALL=((nonprofit OR ""non-profit"" OR ""not-for-profit"" OR ""NGO"" OR ""volunteer"" OR ""civil society"" OR ""third sector"" OR ""charity"" OR ""charitable"" OR ""philanthropy"" OR ""social enterprise"" OR ""social sector"" OR ""donor"")AND model)) AND SO=(Nonprofit ""and"" Voluntary Sector Quarterly)",NVSQ + causal words,none,,20,,,,,,117,,https://www.webofscience.com/wos/woscc/summary/9876c3af-288f-4976-a819-0a08ccf3da3e-280515bb/relevance/1,
-40,ProQuest,3/7/2022,"(""causal"") AND pub(nonprofit and voluntary sector quarterly)",NVSQ + causal,2010-2020,,9,,,,,,,,,0307 Note 1: discarded using longer causal words because the less restrictive causal/causation/causality only yield small amount of papers
-41,Web of Science,3/7/2022,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(nonprofit AND voluntary sector quarterly ))",NVSQ + causal,2010-2020,,8,,,,,,,,https://www.webofscience.com/wos/woscc/summary/f91845d7-2827-428e-9e6f-e03241e2cae2-280929ea/relevance/1,
-42,Web of Science,3/7/2022,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(voluntas))",Voluntars + causal,2010-2020,,12,,,,,,,,https://www.webofscience.com/wos/woscc/summary/885c87e6-bd4e-4ac2-96d6-3f17b7e1ead4-2808a110/relevance/1,
-43,,,,,,,,,,,,,,,,
-44,,,,,,,,,,,,,,,,
+39,Web of Science,3/4/2022,"(ALL=(nonprofit OR ""non-profit"" OR ""not-for-profit"" OR ""NGO"" OR ""volunteer"" OR ""civil society"" OR ""third sector"" OR ""charity"" OR ""charitable"" OR ""philanthropy"" OR ""social enterprise"" OR ""social sector"" OR ""donor"")) AND SO=(PUBLIC MANAGEMENT REVIEW)",PMR  + npo,2010-2020,,,,,,,,117,,https://www.webofscience.com/wos/woscc/summary/9876c3af-288f-4976-a819-0a08ccf3da3e-280515bb/relevance/1,
+40,Web of Science,3/4/2022,NA,PMR  + npo,2010-2020,,,,,,,,,,,
+41,ProQuest,3/5/2022,"(ALL=((nonprofit OR ""non-profit"" OR ""not-for-profit"" OR ""NGO"" OR ""volunteer"" OR ""civil society"" OR ""third sector"" OR ""charity"" OR ""charitable"" OR ""philanthropy"" OR ""social enterprise"" OR ""social sector"" OR ""donor"")AND model)) AND SO=(Nonprofit ""and"" Voluntary Sector Quarterly)",NVSQ + causal words,none,,20,,,,,,,,,
+42,ProQuest,3/7/2022,"(""causal"") AND pub(nonprofit and voluntary sector quarterly)",NVSQ + causal,2010-2020,,9,,,,,,,,,0307 Note-1: discarded using longer causal words because the less restrictive causal/causation/causality only yield small amount of papers
+43,Web of Science,3/7/2022,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(nonprofit AND voluntary sector quarterly ))",NVSQ + causal,2010-2020,,8,,,,,,,,https://www.webofscience.com/wos/woscc/summary/f91845d7-2827-428e-9e6f-e03241e2cae2-280929ea/relevance/1,"0315 Note-1: to avoid overlaping, clusters of key words causal/diff-in-diff/twfe are tried out independently to decide the optimal wording and then combined together in one search"
+44,Web of Science,3/15/2022,"(ALL=(""diff-in-diff"" or ""difference in difference"" or ""two-way fixed effects"" or ""TWFE"") AND SO=(nonprofit AND voluntary sector quarterly ))",NVSQ + DiD cluster,2010-2020,,,0,,,,,,,,
+45,Web of Science,3/15/2022," (""diff-in-diff"" OR ""difference in difference"" OR ""two-way fixed effects"" OR ""TWFE"") AND pub(nonprofit AND voluntary sector quarterly) ",NVSQ + DiD cluster,2010-2020,,,0,,,,,,,,
+46,ProQuest,3/16/2022,"(""survey experiment"" OR ""field experiment"" OR ""experimental model"" OR ""experiment model"" OR ""experimental method"" OR ""experiment method"" OR ""experimental design"" OR ""experiment design"" OR ""rct"" OR ""randomized controlled trial"" OR ""control group"") AND pub(nonprofit AND voluntary sector quarterly)",NVSQ + experimental cluster,2010-2020,,,13,,,,,,,,
+47,Web of Science,3/16/2022,(ALL=(experiment)) AND SO=(nonprofit AND voluntary sector quarterly),NVSQ + experimental cluster,2010-2020,,,30,,,,,,,https://www.webofscience.com/wos/woscc/summary/d07c8909-d4c4-4ff8-a9aa-ead0b9734c0a-2a4ebaa9/relevance/1,0315 Note-2: In WOS I used less restrictive key terms because of only searching abstracts 
+48,Merged ,3/16/2022,NA,NVSQ + experimental cluster,2010-2020,,,34,,,,,,,,
+49,Web of Science,3/15/2022,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(voluntas))",Voluntars + causal,2010-2020,,12,,,,,,,,https://www.webofscience.com/wos/woscc/summary/885c87e6-bd4e-4ac2-96d6-3f17b7e1ead4-2808a110/relevance/1,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,
 Note,Result number is  direct result minus duplicates,,,,,,,,,,,,,,,
 ,Number after merging means discounting overlaps ,,,,,,,,,,,,,,,
