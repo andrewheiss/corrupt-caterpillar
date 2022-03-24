@@ -1,7 +1,9 @@
 ﻿Column Names,Explanation
 caterpillar_id,id assigned in this project starting from 101
-doi,article doi link (number only can be extracted from this column)
+doi,doi number
 journal ,journal title name
+volume,
+issue,
 first_author_name,last name of the first author or sole author
 year,publication year 
 title,article title 
