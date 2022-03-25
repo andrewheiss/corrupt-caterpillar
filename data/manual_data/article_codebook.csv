@@ -8,10 +8,13 @@ first_author_name,last name of the first author or sole author
 year,publication year 
 title,article title 
 topic ,research topic coded by author
+dapartment,general discipline category of the corresponding author's department
+subject_region ,The region where the subjects are from
 data_type,longitunial or cross-sectional 
 data_source,primary or secondary and from survey or 990 or others
-experimental,Dummy indication experimental or observational 
-model,research method used extracted by author from the article
+experimental,"Dummy indicating experimental or observational, 1 for experimental "
+model1,research method used extracted by author from the article
+model2,second research method if used
 causal_wording,"Dummy for using direct wording of ""causation"", ""causal"", or ""causality"" to describe the nature of the study"
 effect_wording,"Dummy for using the wording of ""effect"""
 predict_wording,"Dummy for using the wording of ""predict"""
