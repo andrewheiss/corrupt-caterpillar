@@ -24,3 +24,5 @@ influence_wording,"Dummy for using the wording of ""influence"""
 explicit_causal_claim,"dummy, 1 for explictly claiming to be a fully valid causal study"
 implicity_causal_claim,"dummy, 1 for indicating somewhere on a spectrum of correlation to causation, e.g.""making better causational inference, but could be improved by somehow"""
 non_causal_claim,"dummy, 1 for explictly negate making causal claim"
+qualified_causal_paper,"dummy, 1 for papers we considered to be causal studies, i.e., marking false positives "
+Notes,extra information to record
