@@ -13,6 +13,8 @@ subject_region ,The region where the subjects are from
 data_type,longitunial or cross-sectional 
 data_source,primary or secondary and from survey or 990 or others
 experimental,"Dummy indicating experimental or observational, 1 for experimental "
+rct,"Dummy indicating whether using randomized control trials, overlapping with experimental but not the same since some of the experimental studies do not have control groups"
+causal_design ,"the broader category of strategy or design that endorse the causality, e.g. rct, diff-in-diff, rd"
 model1,research method used extracted by author from the article
 model2,second research method if used
 causal_wording,"Dummy for using direct wording of ""causation"", ""causal"", or ""causality"" to describe the nature of the study"
@@ -24,5 +26,5 @@ influence_wording,"Dummy for using the wording of ""influence"""
 explicit_causal_claim,"dummy, 1 for explictly claiming to be a fully valid causal study"
 implicity_causal_claim,"dummy, 1 for indicating somewhere on a spectrum of correlation to causation, e.g.""making better causational inference, but could be improved by somehow"""
 non_causal_claim,"dummy, 1 for explictly negate making causal claim"
-qualified_causal_paper,"dummy, 1 for papers we considered to be causal studies, i.e., marking false positives "
+qualified_causal_paper,"dummy, 1 for papers we considered to be causal studies, i.e., marking 0 false positives "
 Notes,extra information to record
