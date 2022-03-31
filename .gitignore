@@ -15,6 +15,7 @@ manuscript/*.ent
 # Analysis website stuff
 analysis/_site/*
 analysis/site_libs/*
+analysis/output/*
 
 # Other folders
 admin/*
