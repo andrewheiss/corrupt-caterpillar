@@ -1,0 +1,28 @@
+Method/Journal,Keywords
+Group 1 - NPO Top 3,
+Diff-in-diff,"""diff-in-diff"" OR ""difference in difference"" OR ""two-way fixed effects"" OR ""TWFE"" OR ""Fixed effects"" OR ""Random Effects"" OR ""synthetic control"""
+RDD,"""regression discontinuity"" OR ""RD"" OR ""RDD"" OR ""RD Design"""
+IV,"""instrumental variables"" OR ""2SLS"" OR ""two stage least square""  OR ""3SLS"" OR ""three stage least square"""
+Experiments,"""survey experiment"" OR ""field experiment"" OR ""experimental model"" OR ""experiment model"" OR ""experimental method"" OR ""experiment method"" OR ""experimental design"" OR ""experiment design"" OR ""rct"" OR ""randomized controlled trial"" OR ""control group"""
+"DAGs, matching, IPW, ","""directed acyclic graph"" OR ""DAG"" OR ""credibility revolution"" OR ""Inverse probability weighting"" OR ""IPW"" OR ""matching"" OR ""propensity score"" OR ""Marginal Structural model"""
+SEM,"""Structural Equation Modeling"" OR ""Structural Equation Model"" or ""Partial Least square"""
+Causal,"""causal"" or ""causality"" or ""causation"" OR ""Selection bias"" OR ""Spurious"" OR ""omitted variable bias"" OR ""counfounding"" OR ""confounder"""
++,
+NVSQ,nonprofit AND voluntary sector quarterly
+VOLUNTAS,voluntas
+NML,Nonprofit Management and Leadership
++,
+WOS,All area but full text
+Proquest,Full text rearch
+,
+,
+Group 2 + PA 4,
+nonprofit identifiers for PA journals,"nonprofit OR ""non-profit"" OR ""not-for-profit"" OR ""NGO"" OR ""volunteer"" OR ""civil society"" OR ""third sector"" OR ""charity"" OR ""charitable"" OR ""philanthropy"" OR ""social enterprise"" OR ""social sector"" OR ""donor"")"
++,
+JPART,Journal of Public Administration Research and Theory
+PAR,Public Administration Review
+JPAM,Journal of Policy Analysis and Management
+PMR,PUBLIC MANAGEMENT REVIEW
++,
+WOS,All area but full text
+Proquest,NA (full text not necessary for such broad restriction)
