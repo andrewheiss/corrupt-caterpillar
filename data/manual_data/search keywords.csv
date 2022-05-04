@@ -1,6 +1,6 @@
 Method/Journal,Keywords
 Group 1 - NPO Top 3,
-Diff-in-diff,"""diff-in-diff"" OR ""difference in difference"" OR ""two-way fixed effects"" OR ""TWFE"" OR ""Fixed effects"" OR ""Random Effects"" OR ""synthetic control"""
+Diff-in-diff,"""diff-in-diff"" OR ""difference in difference"" OR ""two-way fixed effects"" OR ""TWFE"" OR ""Fixed effects"" OR ""Event Study"" OR ""synthetic control"""
 RDD,"""regression discontinuity"" OR ""RD"" OR ""RDD"" OR ""RD Design"""
 IV,"""instrumental variables"" OR ""2SLS"" OR ""two stage least square""  OR ""3SLS"" OR ""three stage least square"""
 Experiments,"""survey experiment"" OR ""field experiment"" OR ""experimental model"" OR ""experiment model"" OR ""experimental method"" OR ""experiment method"" OR ""experimental design"" OR ""experiment design"" OR ""rct"" OR ""randomized controlled trial"" OR ""control group"""
