@@ -49,8 +49,8 @@ Rearch_No,Database,Date,Condition_replicable,Condition_short,time_range,Result_n
 47,Web of Science,3/16/2022,(ALL=(experiment)) AND SO=(nonprofit AND voluntary sector quarterly),NVSQ + experimental cluster,2010-2020,,,30,,,,,,,https://www.webofscience.com/wos/woscc/summary/d07c8909-d4c4-4ff8-a9aa-ead0b9734c0a-2a4ebaa9/relevance/1,0315 Note-2: In WOS I used less restrictive key terms because of only searching abstracts 
 48,Merged ,3/16/2022,NA,NVSQ + experimental cluster,2010-2020,,,34,,,,,,,,
 49,Web of Science,3/15/2022,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(voluntas))",Voluntas + causal,2010-2020,,12,,,,,,,,https://www.webofscience.com/wos/woscc/summary/885c87e6-bd4e-4ac2-96d6-3f17b7e1ead4-2808a110/relevance/1,
-,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,
+50,Web of Science,1/13/2023,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(voluntas))",Voluntas + causal,2010-2021,,16,,,,,,,,https://www.webofscience.com/wos/woscc/summary/1230fb07-3fbe-487f-a5e2-6bac6582f66d-6a8201c2/relevance/1,
+51,Web of Science,1/13/2023,"(ALL=(""causal"" or ""causality"" or ""causation"") AND SO=(voluntas))",Voluntas + causal,2010-2022,,6,,,,,,,,https://www.webofscience.com/wos/woscc/summary/7cc325c5-b9d2-4225-980a-d48f8433cda1-6a861451/relevance/1,
 ,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,

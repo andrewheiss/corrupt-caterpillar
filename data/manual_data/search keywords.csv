@@ -1,5 +1,6 @@
 Method/Journal,Keywords
-Group 1 - NPO Top 3,
+,
+** Group 1 - NPO Top 3**,
 Diff-in-diff,"""diff-in-diff"" OR ""difference in difference"" OR ""two-way fixed effects"" OR ""TWFE"" OR ""Fixed effects"" OR ""Event Study"" OR ""synthetic control"""
 RDD,"""regression discontinuity"" OR ""RD"" OR ""RDD"" OR ""RD Design"""
 IV,"""instrumental variables"" OR ""2SLS"" OR ""two stage least square""  OR ""3SLS"" OR ""three stage least square"""
@@ -16,7 +17,7 @@ WOS,All area but full text
 Proquest,Full text rearch
 ,
 ,
-Group 2 + PA 4,
+** Group 2 -PA 4 **,
 nonprofit identifiers for PA journals,"nonprofit OR ""non-profit"" OR ""not-for-profit"" OR ""NGO"" OR ""volunteer"" OR ""civil society"" OR ""third sector"" OR ""charity"" OR ""charitable"" OR ""philanthropy"" OR ""social enterprise"" OR ""social sector"" OR ""donor"")"
 +,
 JPART,Journal of Public Administration Research and Theory
@@ -25,4 +26,4 @@ JPAM,Journal of Policy Analysis and Management
 PMR,PUBLIC MANAGEMENT REVIEW
 +,
 WOS,All area but full text
-Proquest,NA (full text not necessary for such broad restriction)
+Proquest,Not used (full text search not necessary/suitable for such broad search criteria)
