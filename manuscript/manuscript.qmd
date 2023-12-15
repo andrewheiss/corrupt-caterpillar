@@ -3,11 +3,6 @@ title: "Clarifying Correlation and Causation: A Guide to Modern Quantitative Cau
 short-title: "Clarifying Correlation and Causation"
 date: "December 14, 2023"
 author:
-- name: Meng Ye
-  affiliation: Georgia State University
-  email: mye2@gsu.edu
-  url: https://aysps.gsu.edu/phd-student/ye-meng/
-  orcid: 0000-0002-6552-8338
 - name: Andrew Heiss
   affiliations: 
     - id: gsu
@@ -23,6 +18,11 @@ author:
   orcid: 0000-0002-3948-3914
   attributes:
     corresponding: true
+- name: Meng Ye
+  affiliation: Georgia State University
+  email: mye2@gsu.edu
+  url: https://aysps.gsu.edu/phd-student/ye-meng/
+  orcid: 0000-0002-6552-8338
 correspondence-prefix: "Correspondence concerning this article should be addressed to"
 published: Drafting
 abstract: |
