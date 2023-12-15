@@ -92,6 +92,9 @@ withr::with_dir(here::here(), {
 clrs_np <- np_palette()
 ```
 
+Don't let us forget that the causes of human actions are usually immeasurably more complex and varied than our subsequent explanations of them.
+---Fyodor Dostoevsky, *The Idiot*, part IV, chapter 2
+
 
 Causal questions are at the root of many questions in nonprofit studies. Do transparency and accountability improve nonprofit performance? Does being listed on a transparency-focused website like GuideStar increase donations? Other things
 
