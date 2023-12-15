@@ -1,0 +1,7 @@
+project:
+  title: "Manuscript"
+
+csl: csl/apa.csl
+
+profile: 
+  default: nice

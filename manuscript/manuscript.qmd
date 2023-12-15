@@ -1,0 +1,554 @@
+---
+title: "Clarifying Correlation and Causation: A Guide to Modern Quantitative Causal Inference in Nonprofit Studies"
+short-title: "Clarifying Correlation and Causation"
+date: "December 14, 2023"
+author:
+- name: Meng Ye
+  affiliation: Georgia State University
+  email: mye2@gsu.edu
+  url: https://aysps.gsu.edu/phd-student/ye-meng/
+  orcid: 0000-0002-6552-8338
+- name: Andrew Heiss
+  affiliations: 
+    - id: gsu
+      name: Georgia State University
+      department: Andrew Young School of Policy Studies, Department of Public Management and Policy
+      address: "55 Park Place NE, #464"
+      city: Atlanta
+      region: GA
+      country: USA
+      postal-code: 30303
+  email: aheiss@gsu.edu
+  url: https://www.andrewheiss.com/
+  orcid: 0000-0002-3948-3914
+  attributes:
+    corresponding: true
+correspondence-prefix: "Correspondence concerning this article should be addressed to"
+published: Drafting
+abstract: |
+  Discovering causal relationships and testing theoretical mechanisms is a core endeavor of social science. Randomized experiments have long served as a gold standard for making valid causal inferences, but most of the data social scientists work with is observational and non-experimental. However, with newer methodological developments in economics, political science, epidemiology, and other disciplines, an increasing number of studies in social science make causal claims with observational data. As a newer interdisciplinary field, however, nonprofit studies has lagged behind other disciplines in its use of observational causal inference. In this paper, we present a hands-on introduction and guide to design-based observational causal inference methods. We first review and categorize all studies making causal claims in top nonprofit studies journals over the past decade to illustrate the field’s current of experimental and observational approaches to causal inference. We then introduce a framework for modeling and identifying causal processes using directed acyclic graphs (DAGs) and provide a walk-through of the assumptions and procedures for making inferences with a range of different methods, including matching, inverse probability weighting, difference-in-differences, regression discontinuity designs, and instrumental variables. We illustrate each approach with synthetic and empirical examples and provide sample R and Stata code for implementing these methods. We conclude by encouraging scholars and practitioners to make more careful and explicit causal claims in their observational empirical research, collectively developing and improving quantitative work in the broader field of nonprofit studies.
+thanks: |
+  Acknowledgments here if any
+epigraph:
+  - text: "Don't let us forget that the causes of human actions are usually immeasurably more complex and varied than our subsequent explanations of them."
+    source: "Fyodor Dostoevsky, *The Idiot*, part IV, chapter 2"
+keywords:
+  - those
+  - go
+  - here
+word-count: ""
+bibliography: references.json
+link-citations: true
+---
+
+```{r setup, include=FALSE}
+if (is.null(knitr::pandoc_to())) {
+  fmt_out <- "interactive"
+} else {
+  fmt_out <- knitr::pandoc_to()
+}
+
+knitr::opts_chunk$set(
+  echo = FALSE, include = FALSE,
+  warning = FALSE, message = FALSE
+)
+
+knitr::opts_chunk$set(
+  fig.align = "center", fig.retina = 3,
+  fig.width = 6, fig.height = (6 * 0.618),
+  out.width = "100%", collapse = TRUE
+)
+
+options(
+  digits = 3, width = 120,
+  dplyr.summarise.inform = FALSE,
+  knitr.kable.NA = ""
+)
+```
+
+```{r libraries-data, include=FALSE}
+library(tidyverse)
+library(patchwork)
+library(ggdag)
+library(dagitty)
+library(targets)
+library(here)
+
+# Targets stuff
+tar_config_set(
+  store = here::here("_targets"),
+  script = here::here("_targets.R")
+)
+
+# Plotting functions
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+```
+
+Causal questions are at the root of many questions in nonprofit studies. Do transparency and accountability improve nonprofit performance? Does being listed on a transparency-focused website like GuideStar increase donations? Other things
+
+Researchers can investigate causal mechanisms using many different methods. Qualitative scholars can do focus groups, interviews, constructivist stuff, case studies, whatever—deep dives into specific mechanisms in particular cases. In the age of large, publicly available datasets—as well as nonprofits, foundations, and government agencies swimming in data—quantitative research can interrogate causal mechanisms as well. But at the root of all this data lies the statistical adage “correlation does not imply causation”. In the absence of experimental data, where researchers can randomly assign nonprofits or donors to treatment and control conditions to eliminate any confounding differences between the two groups, making causal claims from quantitative studies is difficult. It is not impossible though. Advances in econometric, epidemiological, statistical, and computer scientific methods over the past few decades have led to a “credibility revolution,” where researchers can use carefully constructed research designs to estimate causal effects using observational data
+
+In this paper, we provide an introductory primer to thinking about causal questions using observational data. This will allow nonprofit researchers to make more careful causal claims…
+
+The "causal revolution" / "credibility revolution" has been happening for the past decade in social science disciplines - important because of reasons
+
+How has the discipline of nonprofit studies embraced the causal revolution?
+
+Are there fears of the word "causation" and an emphasis on pure association?
+
+Nonprofit data is very observational - quantitative data from past X years in N journals relies on experimental data Y% of the time, and observational data Z% of the time. 
+
+Similar to recent work by @BaBerrettCoupet:2021 and @Ma-etal:2021 and @Rohrer:2018, in this paper, we provide a introductory primer / framework for approaching causal questions with observational data - accessible and approachable guide to nonprofit researchers and practitioners. The framework here is crucial for general academic research, policy analysis, and program evaluation, among other common types of nonprofit research.
+
+Importantly, in this article with are concerned only with *quantitative* causal inference, or the use of statistical approaches to identify and isolate causal mechanisms. We do not assert that quantitative methods are the only avenue for answering causal questions. Qualitative and mixed methods like focus groups, action research, ___, ___, and ___ are designed to explore causal mechanisms with rich detail (@cite1). Some qualitative methods are at epistemological odds with the whole endeavor of causal effects (@cite2). 
+
+Instead, we address the perennial caveat taught in introductory statistics classes: that correlation does not imply causation. What *does* imply causation? How can we use statistical tools to explore causal questions using observational data?
+
+
+# Why care about causation in nonprofit studies? (MENG)
+
+Graph and analysis of causal stuff in top 3 here
+
+[@Samii:2016]
+
+> 941 - "Causal empiricism is associated with “identification strategy” research designs."
+
+> This is different from quantitative “pseudo-general pseudo-facts” that come from multiple regression 
+
+>> In quantitative research, pseudo-facts are statistical results that are interpreted erroneously in terms of their causal implications, and pseudo-general findings are ones that are erroneously described as applying to a more general class of units than is immediately warranted.
+
+Don't make unwarranted causal-ish statements, but also don't be afraid of the "c-word" [@Hernan:2018]
+
+Language can imply causality even if authors explicitly eschew causal language and identification strategies [@HaberWietenRohrer:2021]
+
+Weasel words - association, determinants, etc. 
+Determinants and prediction is fine! The focus is on getting the most accurate prediction of the outcome
+When making causal claims, though, the focus is on one of the Xs—one lever that a government agency or nonprofit organization can manipulate to affect some sort of change
+
+
+# Why is causal inference so difficult?
+
+## Fundamental problem of causal inference
+
+Formulating and testing hypotheses is the foundation of scientific inquiry. In chemistry, researchers can intervene with blah blah H2O
+
+People and individuals, however, do not respond in identical ways. Counterfactuals - what would have happened in the absense of an intervention to the same person or organization.
+
+Rubin notation for individual potential outcomes
+Treatment effect = whatever
+
+However, it is impossible to observe or measure both Yi0 and Yi1. A charitable foundation interested in poverty reduction cannot give a grant to a nonprofit and simultaneously not give it to the same nonprofit in order to measure the impact of its donation. What the recipient nonprofit receives (or does not receive) from the foundation becomes a realized outcome rather than a potential outcome, and the counterfactual outcome is forever unrealized and unmeasurable.
+
+
+To get around this, we can take the average (or expectation, often indicated with the mathematical function E) of many units that receive the treatment and compare it with the average of comparable units that don’t receive the treatment
+
+Rubin notation: Potential outcomes notation
+
+To help clarify that blah blah, we'll introduce one more piece of mathematical notation - the do() operator
+
+Pearl notation: $\operatorname{do}(x)$ notation = an intervention.
+
+## Selection bias
+
+In addition to the fact that potential outcomes are unobservable, one more characteristic of observational data makes causal inference more complicated. 
+
+Individuals and organizations have agency and choose their interventions
+
+A foundation interested in reducing poverty will typically research a range of candidate nonprofits and select the one that fits their own internal criteria. Nonprofits applying for a grant from that foundation will tailor their applications to meet the foundation's preferences. Accordingly, there are systematic differences between nonprofits that receive a grant and those that don't. It is tempting to measure the average outcome of recipient nonprofits and compare it with the average outcome of non-recipient nonprofits, but this estimate would be incorrect.
+
+Formula showing wrong effect
+
+
+
+# A vocabulary for observational causal inference (ANDREW)
+
+In the absence of random assignment, finding causal effects in observational data where units of analysis can self select their treatments and outcomes thus appears impossible.
+
+Goal of much research in recent years has been to create methods that allow researchers to make plausible causal arguments using observed, non-experimental data. Judea Pearl, computer science, and epidemiology provide us with a special framework for observational causal inference. We introduce the vocabulary and grammar of this framework below.
+
+
+## Causal diagrams
+
+[@PearlMackenzie:2018; @MorganWinship:2014; @PearlGlymourJewell:2016]
+
+DAGs encode our understanding of the data generating process - what in the natural and social world leads to the treatment/exposure, the outcome, and both simultaneously. It represents a type of philosophical model of how the observed world works. Importantly, causal graphs also encode our assumptions of how the world works. 
+
+- Nodes - nodes can be unmeasurable, or even unobserved
+- Edges - Arrows indicate a relationship, or the passing of *statistical association* between nodes - intervening on one node leads to changes in another node - When two nodes are connected by an arrow, we are stating that there is an assumed causal relationship between those nodes; when there is no arrow between nodes, we are explicitly stating that there is no relationship between the two.
+- Acyclicity - can't get back to a node - represents flow of time - if things are cyclical, like hiring new staff $\leftrightarrow$ increased capacity, you can make these nodes time-based: hiring new staff_t → increased capacity_t → hiring new staff_t+1 → increased capacity_t+1
+
+```{r}
+#| label: fig-dag-associations
+#| fig-width: 9
+#| fig-height: 2.75
+#| fig-cap: "Three types of relationships in DAGs"
+#| include: true
+
+data_confounder <- dagify(
+  Y ~ Z + X,
+  X ~ Z,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2))
+) %>% 
+  tidy_dagitty() %>% 
+  mutate(arrow_color = ifelse(name == "Z", clrs$orange, "grey80")) %>% 
+  mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
+
+confounder <- ggplot(data_confounder, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = node_color), size = 12) +
+  geom_dag_text(data = filter(data_confounder, name != "Z"), size = 4) +
+  geom_dag_text(data = filter(data_confounder, name == "Z"), color = "white", size = 4) +
+  scale_color_manual(values = c("grey80", clrs$orange), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Confounder", subtitle = "(Fork)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$orange),
+        plot.subtitle = element_text(hjust = 0.5, color = clrs$orange))
+
+data_mediator <- dagify(
+  Y ~ X + Z,
+  Z ~ X,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2))
+) %>% 
+  tidy_dagitty() %>% 
+  mutate(arrow_color = case_when(
+    name == "Z" & to == "Y" ~ clrs$purple, 
+    name == "X" & to == "Z" ~ clrs$purple,
+    TRUE ~ "grey80")) %>% 
+  mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
+
+mediator <- ggplot(data_mediator, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = node_color), size = 12) +
+  geom_dag_text(data = filter(data_mediator, name != "Z"), size = 4) +
+  geom_dag_text(data = filter(data_mediator, name == "Z"), color = "white", size = 4) +
+  scale_color_manual(values = c("grey80", clrs$purple), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Mediator", subtitle = "(Chain)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$purple),
+        plot.subtitle = element_text(hjust = 0.5, color = clrs$purple))
+
+data_collider <- dagify(
+  Y ~ X,
+  Z ~ X + Y,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2))
+) %>% 
+  tidy_dagitty() %>% 
+  mutate(arrow_color = ifelse(to == "Z", clrs$red, "grey80")) %>% 
+  mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
+
+collider <- ggplot(data_collider, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = node_color), size = 12) +
+  geom_dag_text(data = filter(data_collider, name != "Z"), size = 4) +
+  geom_dag_text(data = filter(data_collider, name == "Z"), color = "white", size = 4) +
+  scale_color_manual(values = c("grey80", clrs$red), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Collider", subtitle = "(Inverted fork)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$red),
+        plot.subtitle = element_text(hjust = 0.5, color = clrs$red))
+
+combined_associations <- (confounder | plot_spacer() | mediator | plot_spacer() | collider) +
+  plot_layout(widths = c(0.32, 0.02, 0.32, 0.02, 0.32))
+combined_associations
+```
+
+This stuff in @fig-dag-associations: (@Elwert:2013 for forks, chains, inverted forks terminology)
+
+- Confounding - forks
+- Mediation - chains
+- Collision - inverted forks [@ElwertWinship:2014; @KnoxLoweMummolo:2020]
+
+Confounding is a major scary issue though - especially if it's unmeasured or unobservable…
+
+
+## Causal identification
+
+In addition to encoding our philosophy and theory of the data generating process, DAGs also serve as an important statistical tool for isolating or identifying causal quantities of interest. Identification strategy definition:
+
+> The central role of an identification strategy is to provide a logic for establishing that D is independent of potential values of Y, thus allowing the analyst to interpret observed associations as causal effects. [@KeeleStevensonElwert:2020]
+
+- d-connection and d-separation - statistical association cannot pass between nodes, either because the arrows are drawn in a way that makes it so information does not link the two, or because conditioning/adjustment blocks the pathway
+
+## *do*-calculus and statistical adjustment
+
+In experiments, the researcher has total control over assignment to treatment, which means all edges/arrows that might influence treatment can be removed. There is no confounding to worry about and we can measure the exact causal effect of X on Y. In potential outcomes language, you still can't see each individual's yes and no response, but you can average all the yeses and noes and get an average causal effect 
+
+With observational data, we'd like to measure $\mathbf{E}(y \mid \operatorname{do}(x))$ but we can only actually see and measure $\mathbf{E}(y \mid x)$, and as shown in Equation \@ref(eq:correlation-not-causation), these two expressions are not the same. This is a formal statement of the phrase "correlation isn't causation":
+
+\begin{equation}
+{\color{gray} \overbrace{{\color{orange} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}}_{\color{orange} \text{Causation}}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \textit{directly intervening} \\ \text{(or doing) $x$}}}}}
+\quad \neq \quad
+{\color{gray} \overbrace{\color{purple} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid x)} \vphantom{\frac{1}{2}}}_{\color{purple} \text{Correlation}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \text{accounting for} \\ \textit{observed } x}}}}
+(\#eq:correlation-not-causation)
+\end{equation}
+
+What we want to be able to do is transform the $\mathbf{E}(y \mid \operatorname{do}(x))$ expression into something without the $\operatorname{do}(x)$, or something *do*-free. A set of three systematic rules for analyzing and decomposing causal graphs known as *do*-calculus provide certain conditions under which we can treat an interventional $\operatorname{do}(\cdot)$ expression like an observed value instead. A complete exploration of these three rules of *do*-calculus go beyond the scope of this paper, but lots of resources like Pearl, that one textbook, other things in my blog post, etc. [@Pearl:2012; @Pearl:2019]
+
+The most common derivation of the rules of *do*-calculus is an approach called "backdoor adjustment". By adjusting or controlling for nodes that open up backdoor paths between the treatment and outcome nodes, we can mathematically transform a $\operatorname{do}(\cdot)$ expression into something based solely on observational data. Formally, the backdoor adjustment formula is defined in Equation \@ref(eq:backdoor):
+
+\begin{equation}
+{\color{gray} \overbrace{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}^{\substack{\text{Causal effect} \\ \text{of $x$ on $y$}}}}
+=
+{\color{gray} \underbrace{{\color{black} \sum_z}}_{\mathclap{\substack{\text{Sum across} \\ \text{all values of $z$}}}}}
+{\color{gray} \overbrace{\color{black} \mathbf{E} (y \mid x, z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{Conditional} \\ \text{mean of $y$,} \\ \text{given $x$ and $z$$\dots$}}}}}
+\times 
+{\color{gray} \overbrace{\color{black} \mathbf{P}(z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{$\dots$ weighted} \\ \text{by $z$}}}}}
+(\#eq:backdoor)
+\end{equation}
+
+Put more simply, \@ref(eq:backdoor) demonstrates that we can remove the interventional $\operatorname{do}(x)$ from the left-hand side of the equation by controlling for (or conditioning on) all the confounders $z$ that open up a backdoor pathway between treatment and outcome. As a simplified illustration, suppose that the relationship between treatment and outcome is confounded only by a nonprofit's size, which is measured as either large or small. Applying this backdoor adjustment formula would entail finding average value of the outcome conditioned on the treatment among large nonprofits, multiplied by the proportion of large nonprofits, added to the average value of the outcome conditioned on the treatment among small nonprofits, multiplied by the proportion of small nonnprofits. The resulting sum would then be the unconfounded causal effect.
+
+In practice, statistical adjustment rarely involves a single binary confounder. For instance, in the causal graph in Fig X, X, Y, and Z all open up backdoors between treatment and outcome, and all three would need to be adjusted for. We will provide a practical demonstration of more common adjustment strategies when there are multiple confounders in section X. At this point, what is important to note is that adjusting for confounding nodes allows us to isolate the single pathway between treatment and outcome. Because spurious statistical associations from other nodes have been blocked statistically, the relationship we care about is identified and we can talk about the *causal* effect of the treatment on the outcome.
+
+TODO: Plot of backdoor and frontdoor adjustment DAGs, but using nonprofit situations
+
+A less common derivation of the rules of *do*-calculus is frontdoor adjustment, commonly used when confounding is unobserved and undertheorized and unmeasurable. Smoking genetics tar cancer thing - Bellemare paper example [@BellemareBloemWexler:2020] - frontdoor adjustment formula here? We do not provide a complete example here—see Bellemare for that—but again, what is most important here is that we can again mathematically transform a quantity with an interventional do(x) into a do-free quantity, meaning that we can make causal claims from observational data.
+
+The backdoor and frontdoor criteria are the most common applications of *do*-calculus because they are readily apparent in causal graphs—it is possible to see forks joining exposure and outcome and identify backdoors, or see measurable mediating nodes that could be used as front doors. In more complex DAGs, these backdoor and frontdoor shortcuts might not be readily visible. In that case, there are software packages that algorithmically work through the various rules of *do*-calculus to determine the set of nodes that need to be adjusted in order to isolate the x → y relationship. Not every DAG is identifiable; but any identifiable DAG can be identified.
+
+## Bad controls
+
+In addition to identification, DAGs provide additional statistical insight and guidance regarding control variables or covariates in regression models
+
+Bad controls and colliders
+
+Good/bad controls: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3689437> - <https://twitter.com/analisereal/status/1512596580632707078>
+
+Table 2 fallacy + @KeeleStevensonElwert:2020 thing
+
+Post-treatment control bias - cite that one paper by Brendan Nyhan - DAGs make it obvious which nodes are post-treatment, since they appear after the treatment node in the causal chain in the graph
+
+
+# Adjustment-based identification (MENG AND ANDREW)
+
+TODO: Use simulated data based on a DAG that has a mediator, collider, and a bunch of confounders
+
+TODO: Replicate a study + draw a DAG for it + use IPW to close back doors
+
+## Backdoor adjustment
+
+The logic of *do*-calculus tells us what nodes or variables been to be adjusted for to isolate the treatment → outcome arrow, but the DAG provides no guidance about how to actually make these adjustments. 
+
+There are many different ways—regression, matching, IPW—each with different nuances.
+
+### Regression
+
+### Matching 
+
+Matching creates entirely new treatment/control populations
+
+### IPW
+
+IPW creates comparable pseudo populations
+
+MAYBE: Make an image with little shaded people showing how matching and IPW work, similar to Torres:2020 (maybe with https://github.com/propublica/weepeople ?)
+
+## Illustration
+
+### Simulated example
+
+### Real example
+
+
+## Frontdoor adjustment
+
+A less common approach to removing confounding is frontdoor adjustment
+
+
+## Other methods?
+
+Briefly mention other methods, like marginal structural models [@BlackwellGlynn:2018]?
+
+
+# Design-based identification (ANDREW AND MENG)
+
+[@AngristPischke:2009; @AngristPischke:2015]
+
+The language of causal graphs, identification, and adjustment provide a universal grammar for discussing causal effects. Commonly used approaches in econometrics and other social science disciplines can be written as causal graphs (see @fig-design-based-dags))
+
+```{r}
+#| label: fig-design-based-dags
+#| fig-width: 9
+#| fig-height: 6
+#| fig-cap: "Possible DAGs for common design-based experimental and quasi-experimental approaches to causal inference. Red arrows represent the identified and isolated relationship between treatment $x$ and outcome $y$. Square nodes represent statistical adjustment."
+#| include: true
+
+data_rct <- dagify(
+  Y ~ Z + X,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2)),
+  exposure = "X",
+  outcome = "Y"
+) %>% 
+  tidy_dagitty() %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
+
+rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status), size = 12) +
+  geom_dag_text(size = 4) +
+  annotate(geom = "text", x = 1, y = 1.2, label = "X = x") +
+  scale_color_manual(values = c(clrs$green, clrs$blue), 
+                     na.value = clrs$yellow, guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Randomized trial", 
+       subtitle = "Randomization deletes all arrows into X") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+
+data_iv <- dagify(Y ~ X + U,
+                  X ~ I + U,
+                  exposure = "X",
+                  outcome = "Y",
+                  latent = "U",
+                  coords = list(x = c(X = 1, Y = 3, U = 2, I = 0),
+                                y = c(X = 1, Y = 1, U = 2, I = 1))) %>% 
+  tidy_dagitty() %>% 
+  adjust_for(var = "I") %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
+
+iv <- ggplot(data_iv, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
+  geom_dag_text(size = 4) +
+  scale_color_manual(values = c(clrs$green, "grey80", clrs$blue), 
+                     na.value = clrs$yellow, guide = "none") +
+  scale_shape_manual(values = c(15, 19), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 2.05)) +
+  labs(title = "Instrumental variable", 
+       subtitle = "Find effect of instrument (I) on X, then find effect of (X | I) on Y") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+
+data_diff_diff <- dagify(Y ~ X + Time + Location,
+                         X ~ Time + Location,
+                         exposure = "X",
+                         outcome = "Y",
+                         coords = list(x = c(X = 1, Y = 3, Time = 2, Location = 2),
+                                       y = c(X = 1, Y = 1, Time = 2, Location = 0))) %>% 
+  tidy_dagitty() %>% 
+  adjust_for(var = c("Time", "Location")) %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
+
+diff_diff <- ggplot(data_diff_diff, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
+  geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
+  geom_dag_text(data = filter(data_diff_diff, name %in% c("X", "Y")), size = 4) +
+  geom_dag_text(data = filter(data_diff_diff, name == "Location"), 
+                nudge_y = 0.37, size = 4) +
+  geom_dag_text(data = filter(data_diff_diff, name == "Time"), 
+                nudge_y = -0.37, size = 4) +
+  scale_color_manual(values = c(clrs$green, clrs$blue), 
+                     na.value = clrs$yellow, guide = "none") +
+  scale_shape_manual(values = c(15, 19), guide = "none") +
+  coord_cartesian(ylim = c(-0.05, 2.05)) +
+  labs(title = "Difference-in-differences", 
+       subtitle = "Adjust for both time (e.g., year) and location (e.g., country, state)") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+
+data_rdd <- dagify(Y ~ X + Running + U,
+                   X ~ Threshold + U,
+                   Running ~ U,
+                   Threshold ~ Running,
+                   exposure = "X",
+                   outcome = "Y",
+                   latent = "U",
+                   coords = list(x = c(X = 1, Y = 4, Running = 3, Threshold = 2, U = 3),
+                                 y = c(X = 1, Y = 1, Running = 2, Threshold = 1.75, U = 3))) %>% 
+  tidy_dagitty() %>% 
+  adjust_for(var = c("Threshold", "Running")) %>% 
+  node_status() %>% 
+  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"),
+         name = recode(name, "Running" = "Running\nvariable"),
+         linetype = ifelse(name == "U" & to == "X", "21", "solid"))
+
+rdd <- ggplot(data_rdd, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(aes(edge_colour = arrow_color, edge_linetype = linetype), edge_width = 1) +
+  geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
+  geom_dag_text(data = filter(data_rdd, name %in% c("X", "Y", "U")), size = 4) +
+  geom_dag_text(data = filter(data_rdd, name == "Running\nvariable"),
+                nudge_y = -0.47, size = 4, lineheight = 1) +
+  geom_dag_text(data = filter(data_rdd, name == "Threshold"),
+                nudge_y = -0.35, size = 4) +
+  scale_color_manual(values = c(clrs$green, "grey80", clrs$blue), 
+                     na.value = clrs$yellow, guide = "none") +
+  scale_shape_manual(values = c(15, 19), guide = "none") +
+  coord_cartesian(ylim = c(0.95, 3.05)) +
+  labs(title = "Regression discontinuity", 
+       subtitle = "Adjust for both the running variable and the threshold") +
+  theme_np_dag() +
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5))
+
+plot_econometrics <- ((rct | iv) / plot_spacer() / (diff_diff | rdd)) +
+  plot_layout(heights = c(0.49, 0.02, 0.49))
+plot_econometrics
+```
+
+For each of these:
+
+1. Sort explanation of what they require, how they work
+2. Explanation of how that connects to the DAG and how the graph reveals the identification strategy
+3. Point to some nonprofit-related papers that use these
+
+Quasi-experiments (design-based—special situations)
+
+- Diff-in-diff
+- RDD
+- IV
+
+## Experiments
+
+No need to control for a ton of things in an RCT precisely because the arrows into X get deleted. No need to worry about perfect balance checks because the researcher has control over and understands the data generating process and assignment to treatment. Look at that one knitted Rmd on RCT FAQs: https://macartan.github.io/i/notes/rct_faqs.html - CONSORT also says to stop doing balance tests - only really need to control for things that might be predictive (https://twitter.com/statsepi/status/1115902270888128514?s=21), but theoretically anything that influences the allocation to treatment is taken care of by randomization.
+
+## Diff-in-diff
+
+Time / location, TWFE stuff
+
+## Regression discontinuity
+
+Threshold/cutpoint
+
+Adjusting for the threshold and only looking at data right around it makes it so that we can treat the sample as if it were random (by assumption), which then means we can delete any arrows going into X just like an RCT
+
+Cite Nick's *The Effect* - refer to his website with the DAGs and animations
+
+## Instrumental variables
+
+IVs have to meet the exclusion restriction - the instrument can only influence the outcome through the treatment. DAGs make this assumption very clear. There cannot be an arrow connecting the instrument to the outcome. DAGs also inform the exogeneity assumption—no other nodes in the graph can feed into the instrument node
+
+It's like frontdoor adjustment (https://www.stat.cmu.edu/~cshalizi/402/lectures/23-causal-estimation/lecture-23.pdf) - Really we're finding the causal effect of I on X, then X on Y, generally through 2SLS
+
+# Tools for researchers and practitioners (BOTH)
+
+Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pearl's stuff, Morgan and Winship?
+
+[@Huntington-Klein:2021; @Cunningham:2021]
+
+## Dealing with time
+
+- Epidemiology and polsci and marginal structural models
+- Economics and TWFE and synthetic controls and event studies - fancier diff-in-diff
+
+
+
+# Conclusion (BOTH)
+
+A call for more causation / more careful thinking around causation. Prediction is fine. But don't automatically run away from causal work.
+

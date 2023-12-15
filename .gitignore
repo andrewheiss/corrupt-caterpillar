@@ -1,80 +1,35 @@
-# --------------------------
-# General things to ignore
-# --------------------------
-
-# Manuscript stuff
-manuscript/*.log
-manuscript/output/*.docx
-manuscript/output/*.html
-manuscript/output/*.pdf
-manuscript/output/*.tex
-manuscript/output/figures/*
-manuscript/pandoc/bin/vc*
-manuscript/*.ent
-
-# Analysis website stuff
-analysis/_site/*
-analysis/site_libs/*
-analysis/output/*
-
-# Other folders
-admin/*
-manuscript/submissions/*
-
-# Miscellaneous
-*.~lock.*
-.DS_Store
-.dropbox
-Icon?
-
-# Ignore all targets-related things
-_targets/
-
-# ------------------
-# R-specific stuff
-# ------------------
-# History files
+# R stuff
+.Rproj.user
 .Rhistory
-.Rapp.history
-
-# Session Data files
 .RData
-
-# User-specific files
 .Ruserdata
 
-# Example code in package build process
-*-Ex.R
+# Quarto stuff
+/.quarto/
+**/*_cache/*
+_site/
+_freeze/
+manuscript/output/
 
-# Output files from R CMD build
-/*.tar.gz
+*.pdf
+*.html
+*.docx
+*.odt
+*.log
+*.aux
+manuscript/manuscript.tex
+!manuscript/_extensions/**
+manuscript/_extensions/**/.DS_Store
 
-# Output files from R CMD check
-/*.Rcheck/
+!manuscript/html/title-metadata.html
 
-# RStudio files
-.Rproj.user/
+# Targets stuff
+_targets
+_targets.yaml
 
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
+# Data stuff
+data/raw_data/
+data/manual_data/*
+data/derived_data/
 
-# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
-
-# knitr and R markdown default cache directories
-*_cache/
-/cache/
-
-# Temporary files created by R markdown
-*.utf8.md
-*.knit.md
-
-# R Environment Variables
-.Renviron
-
-# pkgdown site
-docs/
-
-# translation temp files
-po/*~
+/.luarc.json
