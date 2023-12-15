@@ -44,8 +44,8 @@ list(
 
   ## Manuscript targets ----
 
-  # tar_quarto(manuscript_nice, path = "manuscript", quiet = FALSE, profile = "nice"),
-  # tar_quarto(manuscript_manuscripty, path = "manuscript", quiet = FALSE, profile = "ms"),
+  tar_quarto(manuscript_nice, path = "manuscript", quiet = FALSE, profile = "nice"),
+  tar_quarto(manuscript_manuscripty, path = "manuscript", quiet = FALSE, profile = "ms"),
   
   ## Render the README ----
   tar_quarto(readme, here_rel("README.qmd"))

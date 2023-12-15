@@ -1,5 +1,7 @@
 project:
   title: "Manuscript"
+  render: 
+    - manuscript.qmd
 
 csl: csl/apa.csl
 
