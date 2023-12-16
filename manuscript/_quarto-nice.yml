@@ -3,7 +3,7 @@ project:
 
 format:
   # Nice HTML output
-  html:
+  hikmah-html:
     toc: true
     include-in-header:
       - text: |
