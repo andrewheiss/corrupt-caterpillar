@@ -84,6 +84,21 @@ tar_config_set(
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
 ```
 
+```{=latex}
+% xelatex + unicode-math breaks over/underbrackets so we need to save the 
+% bracket environments and then restore them after \begin{document}. 
+% See https://github.com/latex3/mathtools/issues/29
+
+\makeatletter
+\@ifpackageloaded{unicode-math}{
+% Restore mathtools' brackets
+\let\underbracket=\normalunderbracket
+\let\overbracket=\normaloverbracket
+}{}
+\makeatother
+```
+
+
 Causal questions are at the root of many questions in nonprofit studies. Do transparency and accountability improve nonprofit performance? Does being listed on a transparency-focused website like GuideStar increase donations? Other things
 
 Researchers can investigate causal mechanisms using many different methods. Qualitative scholars can do focus groups, interviews, constructivist stuff, case studies, whatever—deep dives into specific mechanisms in particular cases. In the age of large, publicly available datasets—as well as nonprofits, foundations, and government agencies swimming in data—quantitative research can interrogate causal mechanisms as well. But at the root of all this data lies the statistical adage “correlation does not imply causation”. In the absence of experimental data, where researchers can randomly assign nonprofits or donors to treatment and control conditions to eliminate any confounding differences between the two groups, making causal claims from quantitative studies is difficult. It is not impossible though. Advances in econometric, epidemiological, statistical, and computer scientific methods over the past few decades have led to a “credibility revolution,” where researchers can use carefully constructed research designs to estimate causal effects using observational data
@@ -279,28 +294,26 @@ In addition to encoding our philosophy and theory of the data generating process
 
 In experiments, the researcher has total control over assignment to treatment, which means all edges/arrows that might influence treatment can be removed. There is no confounding to worry about and we can measure the exact causal effect of X on Y. In potential outcomes language, you still can't see each individual's yes and no response, but you can average all the yeses and noes and get an average causal effect 
 
-With observational data, we'd like to measure $\mathbf{E}(y \mid \operatorname{do}(x))$ but we can only actually see and measure $\mathbf{E}(y \mid x)$, and as shown in Equation \@ref(eq:correlation-not-causation), these two expressions are not the same. This is a formal statement of the phrase "correlation isn't causation":
+With observational data, we'd like to measure $\mathbf{E}(y \mid \operatorname{do}(x))$ but we can only actually see and measure $\mathbf{E}(y \mid x)$, and as shown in @eq-correlation-not-causation, these two expressions are not the same. This is a formal statement of the phrase "correlation isn't causation":
 
-\begin{equation}
-{\color{gray} \overbrace{{\color{orange} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}}_{\color{orange} \text{Causation}}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \textit{directly intervening} \\ \text{(or doing) $x$}}}}}
+$$
+{\color{gray} \overbrace{{\color{orange} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}}_{\color{orange} \text{``Causation"}}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \textit{directly intervening} \\ \text{(or doing) $x$}}}}}
 \quad \neq \quad
-{\color{gray} \overbrace{\color{purple} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid x)} \vphantom{\frac{1}{2}}}_{\color{purple} \text{Correlation}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \text{accounting for} \\ \textit{observed } x}}}}
-(\#eq:correlation-not-causation)
-\end{equation}
+{\color{gray} \overbrace{\color{purple} \underbracket[0.25pt]{{\color{black} \mathbf{E}(y \mid x)} \vphantom{\frac{1}{2}}}_{\color{purple} \text{``Correlation"}}}^{\color{gray} \mathclap{\substack{\text{The average} \\ \text{population-level} \\ \text{change in $y$ when} \\ \text{accounting for} \\ \textit{observed } x}}}}
+$$ {#eq-correlation-not-causation}
 
 What we want to be able to do is transform the $\mathbf{E}(y \mid \operatorname{do}(x))$ expression into something without the $\operatorname{do}(x)$, or something *do*-free. A set of three systematic rules for analyzing and decomposing causal graphs known as *do*-calculus provide certain conditions under which we can treat an interventional $\operatorname{do}(\cdot)$ expression like an observed value instead. A complete exploration of these three rules of *do*-calculus go beyond the scope of this paper, but lots of resources like Pearl, that one textbook, other things in my blog post, etc. [@Pearl:2012; @Pearl:2019]
 
-The most common derivation of the rules of *do*-calculus is an approach called "backdoor adjustment". By adjusting or controlling for nodes that open up backdoor paths between the treatment and outcome nodes, we can mathematically transform a $\operatorname{do}(\cdot)$ expression into something based solely on observational data. Formally, the backdoor adjustment formula is defined in Equation \@ref(eq:backdoor):
+The most common derivation of the rules of *do*-calculus is an approach called "backdoor adjustment". By adjusting or controlling for nodes that open up backdoor paths between the treatment and outcome nodes, we can mathematically transform a $\operatorname{do}(\cdot)$ expression into something based solely on observational data. Formally, the backdoor adjustment formula is defined in @eq-backdoor:
 
-\begin{equation}
+$$
 {\color{gray} \overbrace{\color{black} \mathbf{E}(y \mid \operatorname{do}(x)) \vphantom{\frac{1}{2}}}^{\substack{\text{Causal effect} \\ \text{of $x$ on $y$}}}}
-=
+\quad=\quad
 {\color{gray} \underbrace{{\color{black} \sum_z}}_{\mathclap{\substack{\text{Sum across} \\ \text{all values of $z$}}}}}
-{\color{gray} \overbrace{\color{black} \mathbf{E} (y \mid x, z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{Conditional} \\ \text{mean of $y$,} \\ \text{given $x$ and $z$$\dots$}}}}}
-\times 
+{\color{gray} \overbrace{\color{black} \mathbf{E} (y \mid x, z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{Conditional} \\ \text{mean of $y$,} \\ \text{given $x$ and $z\dots$}}}}}
+\enspace\times\enspace
 {\color{gray} \overbrace{\color{black} \mathbf{P}(z) \vphantom{\frac{1}{2}}}^{\mathclap{\substack{\text{$\dots$ weighted} \\ \text{by $z$}}}}}
-(\#eq:backdoor)
-\end{equation}
+$$ {#eq-backdoor}
 
 Put more simply, \@ref(eq:backdoor) demonstrates that we can remove the interventional $\operatorname{do}(x)$ from the left-hand side of the equation by controlling for (or conditioning on) all the confounders $z$ that open up a backdoor pathway between treatment and outcome. As a simplified illustration, suppose that the relationship between treatment and outcome is confounded only by a nonprofit's size, which is measured as either large or small. Applying this backdoor adjustment formula would entail finding average value of the outcome conditioned on the treatment among large nonprofits, multiplied by the proportion of large nonprofits, added to the average value of the outcome conditioned on the treatment among small nonprofits, multiplied by the proportion of small nonnprofits. The resulting sum would then be the unconfounded causal effect.
 

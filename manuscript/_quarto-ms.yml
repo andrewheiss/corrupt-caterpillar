@@ -19,8 +19,13 @@ format:
         \usepackage{mathtools}
         \everydisplay\expandafter{\the\everydisplay\small }
         
-        \usepackage{xeCJK}
-        \setCJKmainfont{Noto Serif SC}
+        \makeatletter
+        \@ifpackageloaded{unicode-math}{
+        % Save mathtools' brackets
+        \let\normalunderbracket=\underbracket
+        \let\normaloverbracket=\overbracket
+        }{}
+        \makeatother
         
         % Add a little bit of extra space above minipages 
         % for gt table footnotes
