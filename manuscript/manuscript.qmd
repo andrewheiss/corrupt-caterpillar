@@ -98,7 +98,7 @@ Are there fears of the word "causation" and an emphasis on pure association?
 
 Nonprofit data is very observational - quantitative data from past X years in N journals relies on experimental data Y% of the time, and observational data Z% of the time. 
 
-Similar to recent work by @BaBerrettCoupet:2021 and @Ma-etal:2021 and @Rohrer:2018, in this paper, we provide a introductory primer / framework for approaching causal questions with observational data - accessible and approachable guide to nonprofit researchers and practitioners. The framework here is crucial for general academic research, policy analysis, and program evaluation, among other common types of nonprofit research.
+Similar to recent work by @BaBerrettCoupet:2021 and @MaEbeiddeWit:2023 and @Rohrer:2018, in this paper, we provide a introductory primer / framework for approaching causal questions with observational data - accessible and approachable guide to nonprofit researchers and practitioners. The framework here is crucial for general academic research, policy analysis, and program evaluation, among other common types of nonprofit research.
 
 Importantly, in this article with are concerned only with *quantitative* causal inference, or the use of statistical approaches to identify and isolate causal mechanisms. We do not assert that quantitative methods are the only avenue for answering causal questions. Qualitative and mixed methods like focus groups, action research, ___, ___, and ___ are designed to explore causal mechanisms with rich detail (@cite1). Some qualitative methods are at epistemological odds with the whole endeavor of causal effects (@cite2). 
 
