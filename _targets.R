@@ -9,6 +9,14 @@ options(
 
 set.seed(4393)  # From random.org
 
+# This hardcodes the absolute path in _targets.yaml, so to make this more
+# portable, we rewrite it every time this pipeline is run (and we don't track
+# _targets.yaml with git)
+tar_config_set(
+  store = here::here("_targets"),
+  script = here::here("_targets.R")
+)
+
 # Global target options
 tar_option_set(
   packages = c("tidyverse"),  # Packages available to all targets

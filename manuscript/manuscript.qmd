@@ -1,7 +1,7 @@
 ---
 title: "Clarifying Correlation and Causation: A Guide to Modern Quantitative Causal Inference in Nonprofit Studies"
 short-title: "Clarifying Correlation and Causation"
-date: "December 14, 2023"
+date: 2024-11-08
 author:
 - name: Andrew Heiss
   affiliations: 
@@ -49,7 +49,7 @@ if (is.null(knitr::pandoc_to())) {
 }
 
 knitr::opts_chunk$set(
-  echo = FALSE, include = FALSE,
+  echo = FALSE, include = FALSE, 
   warning = FALSE, message = FALSE
 )
 
@@ -60,9 +60,7 @@ knitr::opts_chunk$set(
 )
 
 options(
-  digits = 3, width = 120,
-  dplyr.summarise.inform = FALSE,
-  knitr.kable.NA = ""
+  digits = 3, width = 120
 )
 ```
 
@@ -98,6 +96,102 @@ invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
 \makeatother
 ```
 
+::: {.content-visible when-format="html"}
+# Introduction {.hide}
+:::
+
+::: {.callout-note}
+# ARNOVA outline
+
+Cleaned up, simplified outline that I'll expand and integrate with the rest of the outline/draft below
+:::
+
+Causal inference important in social sciences, but hard. Nobel prize for Angrist and Imbens and gang...
+
+Answering causal questions is an important endeavor for nonprofit researchers and practitioners. Nonprofits serve social goals and create and implement a range of programs to accomplish those goals. Measuring the impact of nonprofit programming is essential both for grantors that require evidence of program impact and for nonprofit program managers who are interested in whether their programs lead to the desired outcomes.
+
+Causal work in the nonprofit policy and management literature has increased in the past decade (see fig1), but it remains a less explored topic. The nonprofit literature is full of careful quantitative and statistical work, explicitly descriptive, implicitly causal (with weasel words), and explicitly causal.
+
+In this paper, we provide a practical reference, guide, and review of modern causal inference methods. For the sake of accessibility, we provide sample data, R and Stata code, minimal—and extensively annotated—mathematical notation. We offer a unified, cross-disciplinary framework for thinking about causal identification, spanning econometrics and epidemiology, providing a toolbox for nonprofit researchers to think more carefully about causally-oriented research design and analysis, leading to more effective evaluations of programs, policies, and interventions.
+
+Roadmap—in this paper we blah blah blah
+
+# The fundamental problem of casual inference
+
+Explain that here…
+
+# Visualizing, identifying, and isolating causal relationships with DAGs
+
+General explanation of DAGs and confounding/colliding/mediating and d-separation and do-calculus, etc.
+
+# Isolating causal relationships
+
+To identify a causal relationship in a DAG, we have to ensure that the arrow between the treatment and outcome nodes is isolated and that the treatment and outcome nodes are not linked through any other pathways
+
+There are two general approaches for doing this: 
+
+- Circumstantial identification
+- Adjustment-based identification
+
+# Situation-based approaches
+
+## RCTs
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+## Diff-in-diff + TWFE
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+## RDD
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+## IV
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+# Adjustment-based approaches
+
+## Regression adjustment
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+## IPW and g-computation
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+# Hybrid approaches
+
+Briefly describe combinations of the two approaches, like synthetic controls, DiD with matching, RDD with covariate adjustment, etc.
+
+# Tools for researchers and practitioners
+
+Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pearl's stuff, Morgan and Winship?
+
+# Conclusion
+
+A call for more causation / more careful thinking around causation. Prediction is fine. But don't automatically run away from causal work.
+
+---
 
 Causal questions are at the root of many questions in nonprofit studies. Do transparency and accountability improve nonprofit performance? Does being listed on a transparency-focused website like GuideStar increase donations? Other things
 
@@ -564,4 +658,3 @@ Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pear
 # Conclusion (BOTH)
 
 A call for more causation / more careful thinking around causation. Prediction is fine. But don't automatically run away from causal work.
-

@@ -1,4 +1,5 @@
 
+
 <!-- README.md is generated from README.qmd. Please edit that file -->
 
 # Causal inference in nonprofit management and public administration
@@ -6,7 +7,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-### 👿🐛: Note on “corrupt caterpillar” project name
+### 😈🐛: Note on “corrupt caterpillar” project name
 
 Because project titles change all the time with revisions, rewriting,
 and peer review, we used [**codename**](http://svmiller.com/codename/)
@@ -28,7 +29,7 @@ codename(type = "ubuntu", seed = 1022)
 ## How to replicate
 
 You can either [download the compendium as a ZIP
-file](/archive/main.zip) or use GitHub to clone or fork the compendium
+file](./archive/main.zip) or use GitHub to clone or fork the compendium
 repository (see the green “Code” button at the top of the GitHub page).
 
 We use the [**renv**
