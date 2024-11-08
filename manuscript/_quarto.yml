@@ -73,7 +73,7 @@ format:
       - "Numbers=Proportional"
       - "Numbers=OldStyle"
     sansfont: "Inter"
-    mathfont: "Libertinus Math"
+    # mathfont: "Libertinus Math"
     linestretch: 1.05
 
     include-in-header:
@@ -111,7 +111,7 @@ format:
     mainfontoptions:
       - "Numbers=Proportional"
       - "Numbers=OldStyle"
-    mathfont: "Libertinus Math"
+    # mathfont: "Libertinus Math"
 
     include-in-header:
       # The \everydisplay thing makes all math blocks use \small font
