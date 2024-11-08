@@ -8,18 +8,18 @@ articles <- read_csv(here("data", "manual_data", "Skimming notes_coding.csv"))
 
 nvsq_counts <- read_csv(here("data", "manual_data", "nvsq_counts.csv"))
 
-nvsq_counts_year <- nvsq_counts %>% 
-  filter(Year <= 2020) %>% 
-  # filter(Year <= 2021 & !(Year == 2021 & Issue > 3)) %>% 
-  # mutate(Year = recode(Year, "2021" = 2020)) %>% 
-  group_by(Year) %>% 
+nvsq_counts_year <- nvsq_counts |> 
+  filter(Year <= 2020) |> 
+  # filter(Year <= 2021 & !(Year == 2021 & Issue > 3)) |> 
+  # mutate(Year = recode(Year, "2021" = 2020)) |> 
+  group_by(Year) |> 
   summarize(total = sum(Count))
 
-plot_data <- articles %>% 
-  filter(year <= 2020) %>% 
-  # mutate(year = recode(year, "2021" = 2020)) %>% 
-  count(year) %>% 
-  left_join(nvsq_counts_year, by = c("year" = "Year")) %>% 
+plot_data <- articles |> 
+  filter(year <= 2020) |> 
+  # mutate(year = recode(year, "2021" = 2020)) |> 
+  count(year) |> 
+  left_join(nvsq_counts_year, by = c("year" = "Year")) |> 
   mutate(pct = n / total)
 
 nvsq_count <- ggplot(plot_data, aes(x = factor(year), y = n)) +

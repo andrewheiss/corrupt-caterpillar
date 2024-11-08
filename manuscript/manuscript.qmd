@@ -298,9 +298,9 @@ data_confounder <- dagify(
   X ~ Z,
   coords = list(x = c(X = 1, Y = 3, Z = 2),
                 y = c(X = 1, Y = 1, Z = 2))
-) %>% 
-  tidy_dagitty() %>% 
-  mutate(arrow_color = ifelse(name == "Z", clrs$orange, "grey80")) %>% 
+) |> 
+  tidy_dagitty() |> 
+  mutate(arrow_color = ifelse(name == "Z", clrs$orange, "grey80")) |> 
   mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
 
 confounder <- ggplot(data_confounder, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -320,12 +320,12 @@ data_mediator <- dagify(
   Z ~ X,
   coords = list(x = c(X = 1, Y = 3, Z = 2),
                 y = c(X = 1, Y = 1, Z = 2))
-) %>% 
-  tidy_dagitty() %>% 
+) |> 
+  tidy_dagitty() |> 
   mutate(arrow_color = case_when(
     name == "Z" & to == "Y" ~ clrs$purple, 
     name == "X" & to == "Z" ~ clrs$purple,
-    TRUE ~ "grey80")) %>% 
+    TRUE ~ "grey80")) |> 
   mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
 
 mediator <- ggplot(data_mediator, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -345,9 +345,9 @@ data_collider <- dagify(
   Z ~ X + Y,
   coords = list(x = c(X = 1, Y = 3, Z = 2),
                 y = c(X = 1, Y = 1, Z = 2))
-) %>% 
-  tidy_dagitty() %>% 
-  mutate(arrow_color = ifelse(to == "Z", clrs$red, "grey80")) %>% 
+) |> 
+  tidy_dagitty() |> 
+  mutate(arrow_color = ifelse(to == "Z", clrs$red, "grey80")) |> 
   mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
 
 collider <- ggplot(data_collider, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -492,9 +492,9 @@ data_rct <- dagify(
                 y = c(X = 1, Y = 1, Z = 2)),
   exposure = "X",
   outcome = "Y"
-) %>% 
-  tidy_dagitty() %>% 
-  node_status() %>% 
+) |> 
+  tidy_dagitty() |> 
+  node_status() |> 
   mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
 
 rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -518,10 +518,10 @@ data_iv <- dagify(Y ~ X + U,
                   outcome = "Y",
                   latent = "U",
                   coords = list(x = c(X = 1, Y = 3, U = 2, I = 0),
-                                y = c(X = 1, Y = 1, U = 2, I = 1))) %>% 
-  tidy_dagitty() %>% 
-  adjust_for(var = "I") %>% 
-  node_status() %>% 
+                                y = c(X = 1, Y = 1, U = 2, I = 1))) |> 
+  tidy_dagitty() |> 
+  adjust_for(var = "I") |> 
+  node_status() |> 
   mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
 
 iv <- ggplot(data_iv, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -544,10 +544,10 @@ data_diff_diff <- dagify(Y ~ X + Time + Location,
                          exposure = "X",
                          outcome = "Y",
                          coords = list(x = c(X = 1, Y = 3, Time = 2, Location = 2),
-                                       y = c(X = 1, Y = 1, Time = 2, Location = 0))) %>% 
-  tidy_dagitty() %>% 
-  adjust_for(var = c("Time", "Location")) %>% 
-  node_status() %>% 
+                                       y = c(X = 1, Y = 1, Time = 2, Location = 0))) |> 
+  tidy_dagitty() |> 
+  adjust_for(var = c("Time", "Location")) |> 
+  node_status() |> 
   mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
 
 diff_diff <- ggplot(data_diff_diff, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -577,10 +577,10 @@ data_rdd <- dagify(Y ~ X + Running + U,
                    outcome = "Y",
                    latent = "U",
                    coords = list(x = c(X = 1, Y = 4, Running = 3, Threshold = 2, U = 3),
-                                 y = c(X = 1, Y = 1, Running = 2, Threshold = 1.75, U = 3))) %>% 
-  tidy_dagitty() %>% 
-  adjust_for(var = c("Threshold", "Running")) %>% 
-  node_status() %>% 
+                                 y = c(X = 1, Y = 1, Running = 2, Threshold = 1.75, U = 3))) |> 
+  tidy_dagitty() |> 
+  adjust_for(var = c("Threshold", "Running")) |> 
+  node_status() |> 
   mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"),
          name = recode(name, "Running" = "Running\nvariable"),
          linetype = ifelse(name == "U" & to == "X", "21", "solid"))
