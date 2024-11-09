@@ -39,7 +39,15 @@ keywords:
 word-count: ""
 bibliography: references.json
 link-citations: true
+
+params:
+  wordcount: |
+    <strong>{{< words-sum body-ref >}} total words</strong>: {{< words-body >}} in the body • {{< words-ref >}} in the references
 ---
+
+::: {.content-visible when-meta="wordcount-banner"}
+{{< include _extensions/andrewheiss/wordcount/banner.html >}}
+:::
 
 ```{r setup, include=FALSE}
 if (is.null(knitr::pandoc_to())) {
@@ -100,12 +108,6 @@ invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
 # Introduction {.hide}
 :::
 
-::: {.callout-note}
-# ARNOVA outline
-
-Cleaned up, simplified outline that I'll expand and integrate with the rest of the outline/draft below
-:::
-
 Causal inference important in social sciences, but hard. Nobel prize for Angrist and Imbens and gang...
 
 Answering causal questions is an important endeavor for nonprofit researchers and practitioners. Nonprofits serve social goals and create and implement a range of programs to accomplish those goals. Measuring the impact of nonprofit programming is essential both for grantors that require evidence of program impact and for nonprofit program managers who are interested in whether their programs lead to the desired outcomes.
@@ -116,82 +118,10 @@ In this paper, we provide a practical reference, guide, and review of modern cau
 
 Roadmap—in this paper we blah blah blah
 
-# The fundamental problem of casual inference
-
-Explain that here…
-
-# Visualizing, identifying, and isolating causal relationships with DAGs
-
-General explanation of DAGs and confounding/colliding/mediating and d-separation and do-calculus, etc.
-
-# Isolating causal relationships
-
-To identify a causal relationship in a DAG, we have to ensure that the arrow between the treatment and outcome nodes is isolated and that the treatment and outcome nodes are not linked through any other pathways
-
-There are two general approaches for doing this: 
-
-- Circumstantial identification
-- Adjustment-based identification
-
-# Situation-based approaches
-
-## RCTs
-
-- Explanation + DAG
-- Illustration of how to use it
-- Review of existing nonprofit studies that use it
-- Possible nonprofit research questions that could use it
-
-## Diff-in-diff + TWFE
-
-- Explanation + DAG
-- Illustration of how to use it
-- Review of existing nonprofit studies that use it
-- Possible nonprofit research questions that could use it
-
-## RDD
-
-- Explanation + DAG
-- Illustration of how to use it
-- Review of existing nonprofit studies that use it
-- Possible nonprofit research questions that could use it
-
-## IV
-
-- Explanation + DAG
-- Illustration of how to use it
-- Review of existing nonprofit studies that use it
-- Possible nonprofit research questions that could use it
-
-# Adjustment-based approaches
-
-## Regression adjustment
-
-- Explanation + DAG
-- Illustration of how to use it
-- Review of existing nonprofit studies that use it
-- Possible nonprofit research questions that could use it
-
-## IPW and g-computation
-
-- Explanation + DAG
-- Illustration of how to use it
-- Review of existing nonprofit studies that use it
-- Possible nonprofit research questions that could use it
-
-# Hybrid approaches
-
-Briefly describe combinations of the two approaches, like synthetic controls, DiD with matching, RDD with covariate adjustment, etc.
-
-# Tools for researchers and practitioners
-
-Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pearl's stuff, Morgan and Winship?
-
-# Conclusion
-
-A call for more causation / more careful thinking around causation. Prediction is fine. But don't automatically run away from causal work.
 
 ---
+
+Stuff from first version of introduction:
 
 Causal questions are at the root of many questions in nonprofit studies. Do transparency and accountability improve nonprofit performance? Does being listed on a transparency-focused website like GuideStar increase donations? Other things
 
@@ -213,6 +143,7 @@ Importantly, in this article with are concerned only with *quantitative* causal 
 
 Instead, we address the perennial caveat taught in introductory statistics classes: that correlation does not imply causation. What *does* imply causation? How can we use statistical tools to explore causal questions using observational data?
 
+---
 
 # Why care about causation in nonprofit studies? (MENG)
 
@@ -234,57 +165,79 @@ Weasel words - association, determinants, etc.
 Determinants and prediction is fine! The focus is on getting the most accurate prediction of the outcome
 When making causal claims, though, the focus is on one of the Xs—one lever that a government agency or nonprofit organization can manipulate to affect some sort of change
 
+---
 
-# Why is causal inference so difficult?
+Textbook treatments of causal inference approahces are typically abstract and generic, explaining how treatment $X$ causes outcome $Y$ after adjusting for confounders $Z$. To make these principles as concrete as possible, we use a practical running example relevant to nonprofit education and practice. Experiential philanthropy - Newark, BYU Grantwell and Be a Philanthropist. These programs provide students interested in the nonprofit sector with hands on, practical experience with philanthropy. Beyond their pedagogical aims, these programs are designed to instill a long-term interest and participation in philanthropy.
 
-## Fundamental problem of causal inference
+> Do experiential philanthropy programs cause long-term charitable or prosocial behavior?
 
-Formulating and testing hypotheses is the foundation of scientific inquiry. In chemistry, researchers can intervene with blah blah H2O
-
-People and individuals, however, do not respond in identical ways. Counterfactuals - what would have happened in the absense of an intervention to the same person or organization.
-
-Rubin notation for individual potential outcomes
-Treatment effect = whatever
-
-However, it is impossible to observe or measure both Yi0 and Yi1. A charitable foundation interested in poverty reduction cannot give a grant to a nonprofit and simultaneously not give it to the same nonprofit in order to measure the impact of its donation. What the recipient nonprofit receives (or does not receive) from the foundation becomes a realized outcome rather than a potential outcome, and the counterfactual outcome is forever unrealized and unmeasurable.
+We do not provide any evidence to answer this question directly. Rather, we use simulated data to explore multiple hypothetical research designs that could be used to quantititavely measure the causal impact of these programs. These causal inference approaches can be applied to a wide range of nonprofit-focued questions, though some methods are better suited than others, depending on the context of the research question. TODO We provide examples of possible nonprofit-related causal inquiries that are amenable to each method
 
 
-To get around this, we can take the average (or expectation, often indicated with the mathematical function E) of many units that receive the treatment and compare it with the average of comparable units that don’t receive the treatment
+# A visual vocabulary for causal inference
 
-Rubin notation: Potential outcomes notation
+## Causation through listening
 
-To help clarify that blah blah, we'll introduce one more piece of mathematical notation - the do() operator
+Judea Pearl, computer science, and epidemiology blah blah blah provide us with a specialized framework for describing causal theories and making causal inferences.
 
-Pearl notation: $\operatorname{do}(x)$ notation = an intervention.
+At the core of causal inquiry is the notion of "causation," or what it means when we say that an intervention causes an outcome. In Pearl's framework, causation can be defined using a metaphor of listening and responding:
 
-## Selection bias
+> A variable $X$ is a cause of a variable $Y$ if $Y$ in any way relies on $X$ for its value.… $X$ is a cause of $Y$ if $Y$ listens to $X$ and decides its value in response to what it hears. [@PearlGlymourJewell:2016, 5--6].
 
-In addition to the fact that potential outcomes are unobservable, one more characteristic of observational data makes causal inference more complicated. 
+In the context of our example causal question, we posit that prosocial behavior listens to, responds to, or is caused by experiential philanthropy. We have a theoretical reason to believe that the intervention and the outcome are associated with each other in a sequential, nonspurious way—it is reasonable to assume that having hands-on experience with philanthropy today would influence future attitudes toward charitable giving. Specific educational interventions are not the only cause of prosocial behavior. This behavior listens and responds to other factors, including family background, income, education, and personal attitudes and opinions towards volunteerism and charity—experiential philanthropy is just one of many causes.
 
-Individuals and organizations have agency and choose their interventions
+## Directed acyclic graphs (DAGs)
 
-A foundation interested in reducing poverty will typically research a range of candidate nonprofits and select the one that fits their own internal criteria. Nonprofits applying for a grant from that foundation will tailor their applications to meet the foundation's preferences. Accordingly, there are systematic differences between nonprofits that receive a grant and those that don't. It is tempting to measure the average outcome of recipient nonprofits and compare it with the average outcome of non-recipient nonprofits, but this estimate would be incorrect.
+We can formally represent our theory of how an intervention ($X$) causes an outcome ($Y$) using a directed acyclic graph, or DAG [@PearlMackenzie:2018; @PearlGlymourJewell:2016; @MorganWinship:2014]. DAGs encode our understanding of the data generating process, or which phenomena cause the treatment, the outcome, and both simultaneously. These causal graphs are a philosophical model of the associations between different phenomena and our assumptions behind those relationships.
 
-Formula showing wrong effect
+- **Nodes** - nodes can be unmeasurable, or even unobserved
+- **Edges** - Arrows indicate a relationship, or the passing of *statistical association* between nodes - intervening on one node leads to changes in another node - When two nodes are connected by an arrow, we are stating that there is an assumed causal relationship between those nodes; when there is no arrow between nodes, we are explicitly stating that there is no relationship between the two. Unlike other graphical approaches like structural equation models (SEMs) that assume all relationships are additive and linear, DAG arrows are nonparametric and can represent any kind of functional form (linear, multiplicative, polynomial, exponential, etc.). Accordingly, when we say that $X \rightarrow Y$, we mean that $X$ causally affects $Y$ in some general way, not necessarily linearly [@Rohrer:2018].
+- **Acyclicity** - can't get back to a node - represents flow of time, or temporal ordering - if things are cyclical, like hiring new staff $\leftrightarrow$ increased capacity, you can make these nodes time-based: hiring new staff_t → increased capacity_t → hiring new staff_t+1 → increased capacity_t+1
+
+```{r}
+#| label: fig-dag-basic-real
+#| fig-width: 4.5
+#| fig-height: 2.75
+#| out-width: 60%
+#| fig-cap: "An example directed acyclic graph that shows how experiential philanthropy causes charitable behavior, while incomes causes both"
+#| include: true
+
+data_confounder_example <- dagify(
+  Y ~ Z + X,
+  X ~ Z,
+  coords = list(x = c(X = 1, Y = 3, Z = 2),
+                y = c(X = 1, Y = 1, Z = 2)),
+  labels = c(X = "Experiential\nphilanthropy", Y = "Charitable\nbehavior", Z = "Income")
+) |> 
+  tidy_dagitty()
+
+ggplot(data_confounder_example, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(edge_width = 1) +
+  geom_dag_point(aes(color = name), size = 12) +
+  geom_dag_text(aes(label = name)) +
+  geom_dag_text(
+    data = filter(data_confounder_example, name != "Z"), aes(label = label), 
+    size = 4, nudge_y = -0.32, color = "black", lineheight = 1
+  ) +
+  geom_dag_text(
+    data = filter(data_confounder_example, name == "Z"), aes(label = label), 
+    size = 4, nudge_y = 0.25, color = "black", lineheight = 1
+  ) +
+  scale_color_manual(values = c("X" = clrs$green, "Y" = clrs$blue, "Z" = clrs$yellow), guide = "none") +
+  coord_cartesian(xlim = c(0.75, 3.25), ylim = c(0.6, 2.2)) +
+  theme_np_dag()
+```
+
+
+Importantly, DAGs do more than simply represent the relationships and associations between variables. They provide us with ways to isolate specific relationships of interest. TODO: Rohrer, 28: Even if a researcher does not rely fully on a DAG, mapping out the underlying data-generating process 
+
+## Statistical associations and causal structures
+
+
+General explanation of DAGs and confounding/colliding/mediating and d-separation and do-calculus, etc.
 
 
 
-# A vocabulary for observational causal inference (ANDREW)
-
-In the absence of random assignment, finding causal effects in observational data where units of analysis can self select their treatments and outcomes thus appears impossible.
-
-Goal of much research in recent years has been to create methods that allow researchers to make plausible causal arguments using observed, non-experimental data. Judea Pearl, computer science, and epidemiology provide us with a special framework for observational causal inference. We introduce the vocabulary and grammar of this framework below.
-
-
-## Causal diagrams
-
-[@PearlMackenzie:2018; @MorganWinship:2014; @PearlGlymourJewell:2016]
-
-DAGs encode our understanding of the data generating process - what in the natural and social world leads to the treatment/exposure, the outcome, and both simultaneously. It represents a type of philosophical model of how the observed world works. Importantly, causal graphs also encode our assumptions of how the world works. 
-
-- Nodes - nodes can be unmeasurable, or even unobserved
-- Edges - Arrows indicate a relationship, or the passing of *statistical association* between nodes - intervening on one node leads to changes in another node - When two nodes are connected by an arrow, we are stating that there is an assumed causal relationship between those nodes; when there is no arrow between nodes, we are explicitly stating that there is no relationship between the two.
-- Acyclicity - can't get back to a node - represents flow of time - if things are cyclical, like hiring new staff $\leftrightarrow$ increased capacity, you can make these nodes time-based: hiring new staff_t → increased capacity_t → hiring new staff_t+1 → increased capacity_t+1
 
 ```{r}
 #| label: fig-dag-associations
@@ -310,10 +263,9 @@ confounder <- ggplot(data_confounder, aes(x = x, y = y, xend = xend, yend = yend
   geom_dag_text(data = filter(data_confounder, name == "Z"), color = "white", size = 4) +
   scale_color_manual(values = c("grey80", clrs$orange), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
-  labs(title = "Confounder", subtitle = "(Fork)") +
+  labs(title = "Confounder") +
   theme_np_dag() +
-  theme(plot.title = element_text(hjust = 0.5, color = clrs$orange),
-        plot.subtitle = element_text(hjust = 0.5, color = clrs$orange))
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$orange))
 
 data_mediator <- dagify(
   Y ~ X + Z,
@@ -335,10 +287,9 @@ mediator <- ggplot(data_mediator, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_text(data = filter(data_mediator, name == "Z"), color = "white", size = 4) +
   scale_color_manual(values = c("grey80", clrs$purple), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
-  labs(title = "Mediator", subtitle = "(Chain)") +
+  labs(title = "Mediator") +
   theme_np_dag() +
-  theme(plot.title = element_text(hjust = 0.5, color = clrs$purple),
-        plot.subtitle = element_text(hjust = 0.5, color = clrs$purple))
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$purple))
 
 data_collider <- dagify(
   Y ~ X,
@@ -357,10 +308,9 @@ collider <- ggplot(data_collider, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_text(data = filter(data_collider, name == "Z"), color = "white", size = 4) +
   scale_color_manual(values = c("grey80", clrs$red), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
-  labs(title = "Collider", subtitle = "(Inverted fork)") +
+  labs(title = "Collider") +
   theme_np_dag() +
-  theme(plot.title = element_text(hjust = 0.5, color = clrs$red),
-        plot.subtitle = element_text(hjust = 0.5, color = clrs$red))
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$red))
 
 combined_associations <- (confounder | plot_spacer() | mediator | plot_spacer() | collider) +
   plot_layout(widths = c(0.32, 0.02, 0.32, 0.02, 0.32))
@@ -376,7 +326,57 @@ This stuff in @fig-dag-associations: (@Elwert:2013 for forks, chains, inverted f
 Confounding is a major scary issue though - especially if it's unmeasured or unobservable…
 
 
-## Causal identification
+## Bad controls
+
+Even if we do not rely on a DAG for complete identification of causal effects, mapping out the relationships between nodes in the data-generating process is a useful exercise in any kind of quantitative, regression-based analysis, including non-causal descriptive work. Researchers often take a "kitchen sink" approach to statistical control, including all potential covariates in a model. Understanding the underlying DAG provides clearer guidance about what to control for, helping researchers avoid "bad controls" [@cite]. For instance, if a potential covariate is only associated with the outcome and has no relationship to the treatment, it is not a confounder and need not be included as a control variable in a model, since it can reduce the precision of the model estimates. If a potential covariate is a collider, caused by both the treatment and the outcome, the model results will be biased or distorted.
+
+In addition to identification, DAGs provide additional statistical insight and guidance regarding control variables or covariates in regression models
+
+Bad controls and colliders
+
+Good/bad controls: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3689437> - <https://twitter.com/analisereal/status/1512596580632707078>
+
+Table 2 fallacy + @KeeleStevensonElwert:2020 thing
+
+Post-treatment control bias - cite that one paper by Brendan Nyhan - DAGs make it obvious which nodes are post-treatment, since they appear after the treatment node in the causal chain in the graph
+
+
+# Identifying and isolating causal relationships
+
+## Fundamental problem of causal inference
+
+Formulating and testing hypotheses is the foundation of scientific inquiry. In chemistry, researchers can intervene with blah blah H2O
+
+People and individuals, however, do not respond in identical ways. Counterfactuals - what would have happened in the absense of an intervention to the same person or organization.
+
+Rubin notation for individual potential outcomes
+Treatment effect = whatever
+
+However, it is impossible to observe or measure both Yi0 and Yi1. A charitable foundation interested in poverty reduction cannot give a grant to a nonprofit and simultaneously not give it to the same nonprofit in order to measure the impact of its donation. What the recipient nonprofit receives (or does not receive) from the foundation becomes a realized outcome rather than a potential outcome, and the counterfactual outcome is forever unrealized and unmeasurable.
+
+
+To get around this, we can take the average (or expectation, often indicated with the mathematical function E) of many units that receive the treatment and compare it with the average of comparable units that don’t receive the treatment
+
+Rubin notation: Potential outcomes notation
+
+To help clarify that blah blah, we'll introduce one more piece of mathematical notation - the do() operator
+
+Pearl notation: $\operatorname{do}(x)$ notation = an intervention.
+
+## Selection bias
+
+
+In addition to the fact that potential outcomes are unobservable, one more characteristic of observational data makes causal inference more complicated. 
+
+Individuals and organizations have agency and choose their interventions
+
+A foundation interested in reducing poverty will typically research a range of candidate nonprofits and select the one that fits their own internal criteria. Nonprofits applying for a grant from that foundation will tailor their applications to meet the foundation's preferences. Accordingly, there are systematic differences between nonprofits that receive a grant and those that don't. It is tempting to measure the average outcome of recipient nonprofits and compare it with the average outcome of non-recipient nonprofits, but this estimate would be incorrect.
+
+Formula showing wrong effect
+
+## Causal identification and *d*-separation
+
+To identify a causal relationship in a DAG, we have to ensure that the arrow between the treatment and outcome nodes is isolated and that the treatment and outcome nodes are not linked through any other pathways
 
 In addition to encoding our philosophy and theory of the data generating process, DAGs also serve as an important statistical tool for isolating or identifying causal quantities of interest. Identification strategy definition:
 
@@ -419,65 +419,20 @@ A less common derivation of the rules of *do*-calculus is frontdoor adjustment, 
 
 The backdoor and frontdoor criteria are the most common applications of *do*-calculus because they are readily apparent in causal graphs—it is possible to see forks joining exposure and outcome and identify backdoors, or see measurable mediating nodes that could be used as front doors. In more complex DAGs, these backdoor and frontdoor shortcuts might not be readily visible. In that case, there are software packages that algorithmically work through the various rules of *do*-calculus to determine the set of nodes that need to be adjusted in order to isolate the x → y relationship. Not every DAG is identifiable; but any identifiable DAG can be identified.
 
-## Bad controls
-
-In addition to identification, DAGs provide additional statistical insight and guidance regarding control variables or covariates in regression models
-
-Bad controls and colliders
-
-Good/bad controls: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3689437> - <https://twitter.com/analisereal/status/1512596580632707078>
-
-Table 2 fallacy + @KeeleStevensonElwert:2020 thing
-
-Post-treatment control bias - cite that one paper by Brendan Nyhan - DAGs make it obvious which nodes are post-treatment, since they appear after the treatment node in the causal chain in the graph
-
-
-# Adjustment-based identification (MENG AND ANDREW)
-
-TODO: Use simulated data based on a DAG that has a mediator, collider, and a bunch of confounders
-
-TODO: Replicate a study + draw a DAG for it + use IPW to close back doors
-
-## Backdoor adjustment
+---
 
 The logic of *do*-calculus tells us what nodes or variables been to be adjusted for to isolate the treatment → outcome arrow, but the DAG provides no guidance about how to actually make these adjustments. 
 
-There are many different ways—regression, matching, IPW—each with different nuances.
+There are two general approaches for doing this: 
 
-### Regression
+- Circumstantial identification
+- Adjustment-based identification
 
-### Matching 
-
-Matching creates entirely new treatment/control populations
-
-### IPW
-
-IPW creates comparable pseudo populations
-
-MAYBE: Make an image with little shaded people showing how matching and IPW work, similar to Torres:2020 (maybe with https://github.com/propublica/weepeople ?)
-
-## Illustration
-
-### Simulated example
-
-### Real example
-
-
-## Frontdoor adjustment
-
-A less common approach to removing confounding is frontdoor adjustment
-
-
-## Other methods?
-
-Briefly mention other methods, like marginal structural models [@BlackwellGlynn:2018]?
-
-
-# Design-based identification (ANDREW AND MENG)
+## Circumstantial identification
 
 [@AngristPischke:2009; @AngristPischke:2015]
 
-The language of causal graphs, identification, and adjustment provide a universal grammar for discussing causal effects. Commonly used approaches in econometrics and other social science disciplines can be written as causal graphs (see @fig-design-based-dags))
+The language of causal graphs, identification, and adjustment provide a universal grammar for discussing causal effects. Commonly used approaches in econometrics and other social science disciplines can be written as causal graphs [see @fig-design-based-dags]
 
 ```{r}
 #| label: fig-design-based-dags
@@ -505,7 +460,7 @@ rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
   scale_color_manual(values = c(clrs$green, clrs$blue), 
                      na.value = clrs$yellow, guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
-  labs(title = "Randomized trial", 
+  labs(title = "Randomization", 
        subtitle = "Randomization deletes all arrows into X") +
   theme_np_dag() +
   theme(plot.title = element_text(hjust = 0.5),
@@ -608,27 +563,26 @@ plot_econometrics <- ((rct | iv) / plot_spacer() / (diff_diff | rdd)) +
 plot_econometrics
 ```
 
-For each of these:
 
-1. Sort explanation of what they require, how they work
-2. Explanation of how that connects to the DAG and how the graph reveals the identification strategy
-3. Point to some nonprofit-related papers that use these
-
-Quasi-experiments (design-based—special situations)
-
-- Diff-in-diff
-- RDD
-- IV
-
-## Experiments
+### RCTs
 
 No need to control for a ton of things in an RCT precisely because the arrows into X get deleted. No need to worry about perfect balance checks because the researcher has control over and understands the data generating process and assignment to treatment. Look at that one knitted Rmd on RCT FAQs: https://macartan.github.io/i/notes/rct_faqs.html - CONSORT also says to stop doing balance tests - only really need to control for things that might be predictive (https://twitter.com/statsepi/status/1115902270888128514?s=21), but theoretically anything that influences the allocation to treatment is taken care of by randomization.
 
-## Diff-in-diff
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it - survey vignette experiments, conjoint experiments, field experiments, other kinds of RCTs
+- Possible nonprofit research questions that could use it
+
+### Diff-in-diff + TWFE
 
 Time / location, TWFE stuff
 
-## Regression discontinuity
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+### RDD
 
 Threshold/cutpoint
 
@@ -636,25 +590,68 @@ Adjusting for the threshold and only looking at data right around it makes it so
 
 Cite Nick's *The Effect* - refer to his website with the DAGs and animations
 
-## Instrumental variables
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+### IV
 
 IVs have to meet the exclusion restriction - the instrument can only influence the outcome through the treatment. DAGs make this assumption very clear. There cannot be an arrow connecting the instrument to the outcome. DAGs also inform the exogeneity assumption—no other nodes in the graph can feed into the instrument node
 
 It's like frontdoor adjustment (https://www.stat.cmu.edu/~cshalizi/402/lectures/23-causal-estimation/lecture-23.pdf) - Really we're finding the causal effect of I on X, then X on Y, generally through 2SLS
 
-# Tools for researchers and practitioners (BOTH)
+These used to be common, but have become less popular because of the difficulty in finding a valid instrument that meets all the criteria for clean identification. @rainfall-instrument-paper. Randomized promotion works well, though - @worldbank-book
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+## Adjustment-based identification
+
+### Regression adjustment
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+### IPW and g-computation
+
+- Explanation + DAG
+- Illustration of how to use it
+- Review of existing nonprofit studies that use it
+- Possible nonprofit research questions that could use it
+
+Matching creates entirely new treatment/control populations
+
+IPW creates comparable pseudo populations
+
+MAYBE: Make an image with little shaded people showing how matching and IPW work, similar to Torres:2020 (maybe with https://github.com/propublica/weepeople ?)
+
+---
+
+Despite its popularity in epidemiology and public health, to our knowledge, there are no studies in NVSQ, Voluntas, or NML that employ inverse probability weighting for covariate adjustment for causal inference. There are X that use matching, and there are many that use regression-based adjustment in explicitly non-causal ways (but Haber et al paper finds that these things imply causation anyway). For instance, Huafang et al. paper explicity talks about associations after controlling for ostensible confounders, but also uses causal language like "program impacts" - C-word article and not shying away from causation
+
+
+## Hybrid approaches
+
+Briefly describe combinations of the two approaches, like synthetic controls, DiD with matching, RDD with covariate adjustment, etc.
+
+Briefly mention other methods, like marginal structural models [@BlackwellGlynn:2018]?
+
+# Tools for researchers and practitioners
 
 Code in R and Stata? Point to other resources like The Mixtape, The Effect, Pearl's stuff, Morgan and Winship?
 
 [@Huntington-Klein:2021; @Cunningham:2021]
 
-## Dealing with time
-
-- Epidemiology and polsci and marginal structural models
-- Economics and TWFE and synthetic controls and event studies - fancier diff-in-diff
-
-
-
-# Conclusion (BOTH)
+# Conclusion
 
 A call for more causation / more careful thinking around causation. Prediction is fine. But don't automatically run away from causal work.
+
+We believe that adjustment-based approaches like regression adjustment, matching, and IPW are highly amenable to nonprofit administrative data. Finding specific situations like diff-in-diff is popular in public policy analysis and econometrics because the scale of the data is much larger—researchers can analyze the effect of state- or national-level policies in difference-in-difference designs, or observe the behavior of millions of participants in programs like Medicaid or the Affordable Care Act for regression discontinuity designs. A smaller nonprofit interested in evaluating the impact of a new community program is most likely unable to consider these types of situation-specific quasi-experimental designs to isolate the causal effect. However, with careful theoretical thinking; the development of a robust DAG that describes potential confounders, mediators, and colliders; the use of high quality administrative data; and intentional sensitivity analysis that probes the strength of possible causal relationships when faced with unmeasured confounding [@that-sensmakr-paper; @lucys-tipr-paper]; nonprofit researchers can tell plausible causal stories.
+
+
+# References
