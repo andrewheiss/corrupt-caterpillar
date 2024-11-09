@@ -21,7 +21,7 @@ keep-md: true
 format:
   wordcount-html: 
     output-file: index.html
-    wordcount-banner: false
+    wordcount-banner: true
 
     toc: true
     shift-heading-level-by: 1
