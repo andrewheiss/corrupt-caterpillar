@@ -50,10 +50,45 @@ list(
     clrs, get_latex_rgb, print.color_table)
   ),
 
-  ## Manuscript targets ----
+  ## Data generation ----
+  tar_target(data_observational, make_observational(n = 1135, seed = 536406)),
+  tar_target(data_rct, make_rct(n = 1328, seed = 180295)),
 
+  ## Save data -----
+  tar_target(
+    data_observational_rds, 
+    save_r(data_observational, here_rel("data", "simulated_data", "observational.rds")),
+    format = "file"
+  ),
+  tar_target(
+    data_observational_csv, 
+    save_csv(data_observational, here_rel("data", "simulated_data", "observational.csv")),
+    format = "file"
+  ),
+  tar_target(
+    data_observational_dta, 
+    save_dta(data_observational, here_rel("data", "simulated_data", "observational.dta")),
+    format = "file"
+  ),
+  tar_target(
+    data_rct_rds, 
+    save_r(data_rct, here_rel("data", "simulated_data", "rct.rds")),
+    format = "file"
+  ),
+  tar_target(
+    data_rct_csv, 
+    save_csv(data_rct, here_rel("data", "simulated_data", "rct.csv")),
+    format = "file"
+  ),
+  tar_target(
+    data_rct_dta, 
+    save_dta(data_rct, here_rel("data", "simulated_data", "rct.dta")),
+    format = "file"
+  ),
+
+  ## Manuscript targets ----
   tar_quarto(manuscript, path = "manuscript", working_directory = "manuscript", quiet = FALSE),
-  
+
   ## Render the README ----
   tar_quarto(readme, here_rel("README.qmd"))
 )
