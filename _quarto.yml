@@ -25,8 +25,7 @@ website:
     background: "#5F4690"
     pinned: true
     left:
-      - href: index.qmd
-        text: Home
+      - causal-studies-over-time.qmd
       - text: "Methods"
         menu:
           - methods/observational.qmd

@@ -1,0 +1,72 @@
+---
+title: Causal work in nonnprofit studies
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  fig.retina = 3,
+  dev = "ragg_png",
+  fig.align = "center",
+  out.width = "95%",
+  warning = FALSE,
+  collapse = TRUE,
+  cache.extra = 1234  # Change number to invalidate cache
+)
+
+options(
+  digits = 3, width = 120,
+  tinytable_tt_digits = 2
+)
+```
+
+```{r}
+#| label: packages-data
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(targets)
+library(here)
+
+tar_config_set(
+  store = here::here('_targets'),
+  script = here::here('_targets.R')
+)
+
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+
+articles <- read_csv(here("data", "manual_data", "Skimming notes_coding.csv"))
+nvsq_counts <- read_csv(here("data", "manual_data", "nvsq_counts.csv"))
+```
+
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+nvsq_counts_year <- nvsq_counts |>
+  filter(Year <= 2020) |>
+  group_by(Year) |>
+  summarize(total = sum(Count))
+
+plot_data <- articles |>
+  filter(year <= 2020) |>
+  count(year) |>
+  left_join(nvsq_counts_year, by = c("year" = "Year")) |>
+  mutate(pct = n / total)
+
+ggplot(plot_data, aes(x = factor(year), y = pct)) +
+  geom_col(fill = clrs$Prism[9]) +
+  labs(
+    x = NULL,
+    y = "Percent of NVSQ articles",
+    title = "Proportion of causally-focused\narticles in NVSQ, 2010–2020",
+    caption = "Article uses an experiment, difference-in-differences, regression discontinuity,\ninstrumental variables, or other method for statistically identifying a causal mechanism\n\n(Voluntas, NML, PAR, JPART, JPAM, and PMR forthcoming)"
+  ) +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  theme_np() +
+  theme(panel.grid.major.x = element_blank())
+```
