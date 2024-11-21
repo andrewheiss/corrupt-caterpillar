@@ -109,9 +109,15 @@ theme_np_dag <- function(...) {
 
 # Colors ------------------------------------------------------------------
 
-clrs <- viridisLite::turbo(6, begin = 0, end = 1) |> 
-  purrr::set_names(c("purple", "blue", "green", "yellow", "orange", "red")) |> 
-  as.list()
+# clrs <- viridisLite::turbo(6, begin = 0, end = 1) |> 
+#   purrr::set_names(c("purple", "blue", "green", "yellow", "orange", "red")) |> 
+#   as.list()
+
+# https://carto.com/carto-colors/
+clrs <- list(
+  Prism = rcartocolor::carto_pal(n = 12, "Prism"),
+  Sunset = rcartocolor::carto_pal(7, "Sunset")
+)
 
 #' Convert colors to LaTeX RGB definitions
 #'
