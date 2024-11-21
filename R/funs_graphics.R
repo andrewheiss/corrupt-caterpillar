@@ -59,7 +59,7 @@ theme_np <- function(base_size = 11, base_family = "Assistant") {
                                       margin = margin(t = 10), hjust = 0),
           plot.tag = element_text(size = rel(1.4), face = "bold",
                                   family = "Assistant"),
-          panel.border = element_rect(color = "grey50", fill = NA, size = 0.15),
+          panel.border = element_rect(color = "grey50", fill = NA, linewidth = 0.15),
           panel.spacing = unit(1, "lines"),
           panel.grid.minor = element_blank(),
           strip.text = element_text(size = rel(0.9), hjust = 0,
