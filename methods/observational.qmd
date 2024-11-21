@@ -1,0 +1,351 @@
+---
+title: "Observational"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  fig.retina = 3,
+  dev = "ragg_png",
+  fig.align = "center",
+  out.width = "95%",
+  warning = FALSE,
+  collapse = TRUE,
+  cache.extra = 1234  # Change number to invalidate cache
+)
+
+options(
+  digits = 3, width = 120,
+  tinytable_tt_digits = 2
+)
+```
+
+```{r}
+#| label: packages-data
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(targets)
+library(modelsummary)
+library(tinytable)
+library(marginaleffects)
+library(ggdist)
+library(scales)
+library(WeightIt)
+library(ggdag)
+library(dagitty)
+library(parameters)
+
+tar_config_set(
+  store = here::here('_targets'),
+  script = here::here('_targets.R')
+)
+
+observed <- tar_read(data_observational)
+
+# Plotting functions
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+set_annotation_fonts()
+
+gof_map <- tribble(
+  ~raw,            ~clean,               ~fmt, ~omit,
+  "nobs",          "N",                  0,    FALSE,
+  "r.squared",     "$R^2$",          2,    FALSE,
+  "adj.r.squared", "\\(R^2\\) adjusted", 2,    FALSE
+)
+```
+
+## DAG
+
+```{r}
+#| label: plot-dag-observational
+#| fig-width: 6
+#| fig-height: 6
+
+coords <- tribble(
+  ~name, ~x,   ~y,   ~type,         ~color,         ~label,
+  "X",   1,    3,    "Treatment",   clrs$Prism[4],  "Experiential\nphilanthropy",
+  "Y",   3,    3,    "Outcome",     clrs$Prism[2],  "Charitable\nbehavior",
+  "Z1",  5/3,  4.2,  "Confounder",  clrs$Prism[6],  "Social awareness",
+  "Z2",  7/3,  4.2,  "Confounder",  clrs$Prism[6],  "Age",
+  "Z3",  5/3,  5,    "Confounder",  clrs$Prism[6],  "GPA",
+  "Z4",  7/3,  5,    "Confounder",  clrs$Prism[6],  "Income",
+  "M",   2,    2,    "Mediator",    clrs$Prism[3],  "Community\nconnections",
+  "C",   2,    1,    "Collider",    clrs$Prism[8],  "Employment in\nnonprofit sector"
+) |> 
+  mutate(type = fct_inorder(type))
+
+data_full_dag <- dagify(
+  Y ~ X + Z1 + Z2 + Z3 + Z4 + M,
+  X ~ Z1 + Z2 + Z3 + Z4,
+  M ~ X,
+  C ~ X + Y,
+  coords = coords,
+  labels = pull(coords, label, name = name)
+) |> 
+  tidy_dagitty() |> 
+  left_join(select(coords, name, type, color), by = join_by(name)) |> 
+  mutate(arrow_color = case_when(
+    name == "X" & to == "Y" ~ "black",
+    to == "C" ~ clrs$Prism[8],
+    to == "M" | (name == "M" & to == "Y") ~ clrs$Prism[3],
+    .default = color
+  ))
+
+ggplot(data_full_dag, aes(x = x, y = y, xend = xend, yend = yend)) +
+  geom_dag_edges(edge_width = 0.5) +
+  geom_dag_edges(aes(edge_color = arrow_color), edge_width = 0.5) +
+  geom_dag_point(aes(color = type), size = 12) +
+  geom_dag_label(
+    data = filter(data_full_dag, type != "Confounder"), aes(label = label), 
+    size = 4, nudge_y = -0.46, color = "black", lineheight = 1
+  ) +
+  geom_dag_label(
+    data = filter(data_full_dag, type == "Confounder"), aes(label = label), 
+    size = 4, nudge_y = 0.35, color = "black", lineheight = 1
+  ) +
+  scale_color_manual(
+    values = coords |> distinct(type, color) |> pull(color, name = type),
+    guide = guide_legend(
+      title = NULL, override.aes = list(size = 6), label.position = "bottom"
+    )
+  ) +
+  coord_cartesian(xlim = c(0.98, 3.02)) +
+  theme_np_dag() + 
+  theme(legend.position = "top")
+```
+
+## EDA
+
+### Confounders
+
+```{r}
+ggplot(observed, aes(x = social_awareness, y = experiential_learning)) +
+  geom_dots(aes(side = ifelse(experiential_learning == 1, "bottom", "top")),
+    pch = 19, color = "grey20", scale = 0.2
+  ) +
+  geom_smooth(
+    method = "glm", method.args = list(family = binomial(link = "logit")),
+    se = FALSE
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Social awareness index", y = "Experiential learning participation")
+
+ggplot(observed, aes(x = age, y = experiential_learning)) +
+  geom_dots(aes(side = ifelse(experiential_learning == 1, "bottom", "top")),
+    pch = 19, color = "grey20", scale = 0.4
+  ) +
+  geom_smooth(
+    method = "glm", method.args = list(family = binomial(link = "logit")),
+    se = FALSE
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Age", y = "Experiential learning participation")
+
+ggplot(observed, aes(x = gpa, y = experiential_learning)) +
+  geom_dots(aes(side = ifelse(experiential_learning == 1, "bottom", "top")),
+    pch = 19, color = "grey20", scale = 0.4
+  ) +
+  geom_smooth(
+    method = "glm", method.args = list(family = binomial(link = "logit")),
+    se = FALSE
+  ) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "GPA", y = "Experiential learning participation")
+
+ggplot(observed, aes(x = income, y = experiential_learning)) +
+  geom_dots(aes(side = ifelse(experiential_learning == 1, "bottom", "top")),
+    pch = 19, color = "grey20", scale = 0.4
+  ) +
+  geom_smooth(
+    method = "glm", method.args = list(family = binomial(link = "logit")),
+    se = FALSE
+  ) +
+  scale_x_continuous(labels = label_dollar()) +
+  scale_y_continuous(labels = label_percent()) +
+  labs(x = "Income", y = "Experiential learning participation")
+```
+
+```{r}
+ggplot(observed, aes(x = social_awareness, y = prosocial_index)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(observed, aes(x = age, y = prosocial_index)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(observed, aes(x = gpa, y = prosocial_index)) +
+  geom_point() +
+  geom_smooth()
+
+ggplot(observed, aes(x = income, y = prosocial_index)) +
+  geom_point() +
+  geom_smooth()
+```
+
+### Mediator
+
+```{r}
+observed |> 
+  mutate(experiential_learning_fct = as.logical(experiential_learning)) |> 
+  ggplot(aes(x = experiential_learning_fct, y = community_connections)) +
+  geom_point(position = position_jitter(height = 0)) +
+  geom_boxplot(aes(group = experiential_learning_fct))
+
+ggplot(observed, aes(x = community_connections, y = prosocial_index)) +
+  geom_point() +
+  labs(x = "Community connections", y = "Prosocial index")
+```
+
+### Collider
+
+```{r}
+observed |> 
+  mutate(experiential_learning_fct = as.logical(experiential_learning)) |> 
+  mutate(employed_nonprofit_fct = as.logical(employed_nonprofit)) |> 
+  ggplot(aes(x = experiential_learning_fct, y = employed_nonprofit_fct)) +
+  geom_point(position = position_jitter())
+
+observed |> 
+  mutate(employed_nonprofit_fct = as.logical(employed_nonprofit)) |> 
+  ggplot(aes(x = prosocial_index, y = employed_nonprofit_fct)) +
+  geom_point(position = position_jitter(width = 0))
+```
+
+## Model comparisons
+
+```{r}
+model_naive <- lm(
+  prosocial_index ~ experiential_learning, 
+  data = observed
+)
+
+model_adjusted_correct <- lm(
+  prosocial_index ~ experiential_learning + social_awareness + age + gpa + income,
+  data = observed
+)
+
+model_with_mediator <- lm(
+  prosocial_index ~ experiential_learning + social_awareness + age + gpa + income + community_connections, 
+  data = observed
+)
+
+model_collider_selection <- lm(
+  prosocial_index ~ experiential_learning + social_awareness + age + gpa + income, 
+  data = filter(observed, employed_nonprofit == 1)
+)
+
+model_collider_post_treatment <- lm(
+  prosocial_index ~ experiential_learning + social_awareness + age + gpa + income + employed_nonprofit, 
+  data = observed
+)
+
+models <- list(
+  "Correctly adjusted" = model_adjusted_correct,
+  "Naive" = model_naive,
+  "Mediator included" = model_with_mediator,
+  "Collider (selection)" = model_collider_selection,
+  "Collider (post-treatment covariate)" = model_collider_post_treatment
+)
+```
+
+```{r}
+modelsummary(
+  models,
+  statistic = "[{conf.low}, {conf.high}]",
+  fmt = 2,
+  gof_map = gof_map,
+  add_columns = tibble("True effect" = c(NA, NA, 10)) |> magrittr::set_attr("position", 2)
+) |> 
+  style_tt(
+    i = 3:4, j = 1:6, 
+    background = clrs$Prism[6], color = "#ffffff", bold = TRUE
+  )
+```
+
+
+```{r}
+modelsummary(
+  models,
+  statistic = "[{conf.low}, {conf.high}]",
+  fmt = 2,
+  coef_map = c("experiential_learning"),
+  gof_map = gof_map,
+  add_columns = tibble("True effect" = 10) |> magrittr::set_attr("position", 2)
+)
+```
+
+```{r}
+treatment_effects <- enframe(models) |> 
+  mutate(params = map(value, \(x) model_parameters(x))) |> 
+  unnest(params) |> 
+  filter(Parameter == "experiential_learning") |> 
+  mutate(name = factor(name, levels = names(models)))
+
+ggplot(treatment_effects, aes(x = Coefficient, y = fct_rev(name))) +
+  geom_vline(xintercept = 10, color = clrs$Prism[2]) +
+  geom_pointrange(aes(xmin = CI_low, xmax = CI_high)) +
+  labs(x = "Treatment effect", y = NULL) +
+  theme_np() +
+  theme(panel.grid.major.y = element_blank())
+```
+
+## Fancier estimation
+
+```{r}
+weights_ate <- weightit(
+  experiential_learning ~ social_awareness + age + gpa + income, 
+  data = observed, 
+  method = "glm", 
+  estimand = "ATE"
+)
+
+observed$wts_ate <- weights_ate$weights
+
+plot_data_weights_ate <- tibble(
+  propensity = weights_ate$ps,
+  weight = weights_ate$weights,
+  treatment = weights_ate$treat
+)
+
+ggplot() + 
+  geom_histogram(data = filter(plot_data_weights_ate, treatment == 1), 
+    bins = 50, aes(x = propensity, weight = weight, fill = "Treated pseudo-population")) + 
+  geom_histogram(data = filter(plot_data_weights_ate, treatment == 0), 
+    bins = 50, aes(x = propensity, weight = weight, y = -after_stat(count), fill = "Untreated psuedo-population")) +
+  geom_histogram(data = filter(plot_data_weights_ate, treatment == 1), 
+    bins = 50, aes(x = propensity, fill = "Treated people")) + 
+  geom_histogram(data = filter(plot_data_weights_ate, treatment == 0), 
+    bins = 50, aes(x = propensity, y = -after_stat(count), fill = "Untreated people")) +
+  geom_hline(yintercept = 0, color = "white", linewidth = 0.25) +
+  scale_x_continuous(labels = scales::label_percent()) +
+  scale_y_continuous(label = abs) +
+  scale_fill_manual(
+    values = c(
+      clrs$Prism[2], colorspace::lighten(clrs$Prism[2], 0.5), 
+      clrs$Prism[8], colorspace::lighten(clrs$Prism[8], 0.65)), 
+    guide = guide_legend(reverse = FALSE, nrow = 2)) +
+  labs(x = "Propensity", y = "Count", fill = NULL) +
+  theme_np() +
+  theme(
+    panel.grid = element_blank(),
+    legend.position = "top",
+    legend.key.size = unit(0.65, "lines")
+  )
+```
+
+```{r}
+model_outcome_ate <- lm(
+  prosocial_index ~ experiential_learning, 
+  data = observed, 
+  weights = wts_ate
+)
+
+avg_comparisons(model_outcome_ate, variables = "experiential_learning")
+```
