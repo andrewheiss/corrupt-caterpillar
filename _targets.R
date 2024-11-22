@@ -56,6 +56,7 @@ list(
   tar_target(data_did, make_diff_in_diff(n_per_school_year = 126, seed = 417724)),
   tar_target(data_rdd_sharp, make_rdd(n = 967, seed = 635404, fuzzy = FALSE)),
   tar_target(data_rdd_fuzzy, make_rdd(n = 992, seed = 995303, fuzzy = TRUE)),
+  tar_target(data_iv, make_iv(n = 914, seed = 266416)),
 
   ## Save data -----
   # TODO: Use static/dynamic branching here instead of this gross repetitive mess

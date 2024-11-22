@@ -1,0 +1,115 @@
+---
+title: "Instrumental variables"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  fig.retina = 3,
+  dev = "ragg_png",
+  fig.align = "center",
+  out.width = "95%",
+  warning = FALSE,
+  collapse = TRUE,
+  cache.extra = 1234  # Change number to invalidate cache
+)
+
+options(
+  digits = 3, width = 120,
+  tinytable_tt_digits = 2
+)
+```
+
+```{r}
+#| label: packages-data
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(targets)
+library(modelsummary)
+library(tinytable)
+library(scales)
+library(ggdag)
+library(dagitty)
+library(parameters)
+library(estimatr)
+
+tar_config_set(
+  store = here::here('_targets'),
+  script = here::here('_targets.R')
+)
+
+iv <- tar_read(data_iv)
+
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+set_annotation_fonts()
+
+gof_map <- tribble(
+  ~raw,            ~clean,               ~fmt, ~omit,
+  "nobs",          "N",                  0,    FALSE,
+  "r.squared",     "$R^2$",          2,    FALSE,
+  "adj.r.squared", "\\(R^2\\) adjusted", 2,    FALSE
+)
+```
+
+
+```{r}
+model_iv_basic <- iv_robust(
+  prosocial_index ~ experiential_learning | promoted, 
+  data = iv
+)
+
+model_iv_controls <- iv_robust(
+  prosocial_index ~ experiential_learning + social_awareness + age + gpa + income | 
+    promoted + social_awareness + age + gpa + income, 
+  data = iv
+)
+
+model_naive <- lm(
+  prosocial_index ~ experiential_learning, 
+  data = iv
+)
+
+model_naive_controls <- lm(
+  prosocial_index ~ experiential_learning + social_awareness + age + gpa + income, 
+  data = iv
+)
+
+models <- list(
+  "IV" = model_iv_basic,
+  "IV with controls" = model_iv_controls,
+  "Naive OLS" = model_naive,
+  "OLS with controls" = model_naive_controls
+)
+```
+
+```{r}
+modelsummary(
+  models,
+  statistic = "[{conf.low}, {conf.high}]",
+  fmt = 2,
+  coef_map = c("experiential_learning"),
+  gof_map = gof_map,
+  add_columns = tibble("True effect" = 10) |> magrittr::set_attr("position", 2)
+)
+```
+
+```{r}
+treatment_effects <- enframe(models) |> 
+  mutate(params = map(value, \(x) model_parameters(x))) |> 
+  unnest(params) |> 
+  filter(Parameter == "experiential_learning") |> 
+  mutate(name = factor(name, levels = names(models)))
+
+ggplot(treatment_effects, aes(x = Coefficient, y = fct_rev(name))) +
+  geom_vline(xintercept = 10, color = clrs$Prism[2]) +
+  geom_pointrange(aes(xmin = CI_low, xmax = CI_high)) +
+  labs(x = "Treatment effect", y = NULL) +
+  theme_np(base_size = 16) +
+  theme(panel.grid.major.y = element_blank())
+```
