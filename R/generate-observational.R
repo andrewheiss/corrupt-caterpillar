@@ -65,4 +65,6 @@ make_observational <- function(n, seed) {
       social_awareness, age, gpa, income, 
       community_connections, employed_nonprofit
     )
+
+  return(simulated_data)
 }

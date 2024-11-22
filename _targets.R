@@ -53,6 +53,9 @@ list(
   ## Data generation ----
   tar_target(data_observational, make_observational(n = 1135, seed = 536406)),
   tar_target(data_rct, make_rct(n = 1328, seed = 180295)),
+  tar_target(data_did, make_diff_in_diff(n_per_school_year = 126, seed = 417724)),
+  tar_target(data_rdd_sharp, make_rdd(n = 967, seed = 635404, fuzzy = FALSE)),
+  tar_target(data_rdd_fuzzy, make_rdd(n = 992, seed = 995303, fuzzy = TRUE)),
 
   ## Save data -----
   tar_target(
@@ -83,6 +86,21 @@ list(
   tar_target(
     data_rct_dta, 
     save_dta(data_rct, here_rel("data", "simulated_data", "rct.dta")),
+    format = "file"
+  ),
+  tar_target(
+    data_did_rds, 
+    save_r(data_did, here_rel("data", "simulated_data", "did.rds")),
+    format = "file"
+  ),
+  tar_target(
+    data_did_csv, 
+    save_csv(data_did, here_rel("data", "simulated_data", "did.csv")),
+    format = "file"
+  ),
+  tar_target(
+    data_did_dta, 
+    save_dta(data_did, here_rel("data", "simulated_data", "did.dta")),
     format = "file"
   ),
 

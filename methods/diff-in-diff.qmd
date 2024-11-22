@@ -1,0 +1,153 @@
+---
+title: "Difference-in-differences"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  fig.retina = 3,
+  dev = "ragg_png",
+  fig.align = "center",
+  out.width = "95%",
+  warning = FALSE,
+  collapse = TRUE,
+  cache.extra = 1234  # Change number to invalidate cache
+)
+
+options(
+  digits = 3, width = 120,
+  tinytable_tt_digits = 2
+)
+```
+
+```{r}
+#| label: packages-data
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(targets)
+library(modelsummary)
+library(tinytable)
+library(scales)
+library(ggdag)
+library(dagitty)
+library(parameters)
+
+tar_config_set(
+  store = here::here('_targets'),
+  script = here::here('_targets.R')
+)
+
+did <- tar_read(data_did)
+
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+set_annotation_fonts()
+
+gof_map <- tribble(
+  ~raw,            ~clean,               ~fmt, ~omit,
+  "nobs",          "N",                  0,    FALSE,
+  "r.squared",     "$R^2$",          2,    FALSE,
+  "adj.r.squared", "\\(R^2\\) adjusted", 2,    FALSE
+)
+```
+
+
+## Parallel trends
+
+```{r}
+#| message: false
+
+did |> 
+  group_by(school, year) |> 
+  summarize(mean = ggplot2::mean_se(prosocial_index, mult = 1.96)) |> 
+  unnest(mean) |> 
+  ggplot(aes(x = year, y = y, color = school)) +
+  geom_vline(xintercept = 2022.5, linetype = "dashed") +
+  geom_line(linewidth = 0.25, show.legend = FALSE) +
+  geom_pointrange(aes(ymin = ymin, ymax = ymax)) +
+  scale_color_manual(values = c(clrs$Prism[2], clrs$Prism[8])) +
+  labs(x = NULL, y = "Prosocial index", color = NULL) +
+  theme_np()
+```
+
+## Models
+
+```{r}
+model_small <- lm(
+  prosocial_index ~ school + factor(year) + school*factor(year),
+  data = filter(did, year %in% c(2022, 2023))
+)
+
+model_small_controls <- lm(
+  prosocial_index ~ school + factor(year) + school*factor(year) +
+    social_awareness + age + gpa + income,
+  data = filter(did, year %in% c(2022, 2023))
+)
+
+model_full <- lm(
+  prosocial_index ~ school + factor(year) + I(school == "School B" & year >= 2023),
+  data = did
+)
+
+model_full_controls <- lm(
+  prosocial_index ~ school + factor(year) + I(school == "School B" & year >= 2023) +
+    social_awareness + age + gpa + income,
+  data = did
+)
+
+models <- list(
+  "Interaction term only" = model_small,
+  "Interaction term + covariates" = model_small_controls,
+  "Interaction term only (all years)" = model_full,
+  "Interaction term + covariates (all years)" = model_full_controls
+)
+```
+
+```{r}
+modelsummary(
+  models,
+  statistic = "[{conf.low}, {conf.high}]",
+  fmt = 2,
+  gof_map = gof_map,
+  add_columns = tibble("True effect" = c(NA, NA, 10)) |> magrittr::set_attr("position", 2)
+)# |> 
+  # style_tt(
+  #   i = 3:4, j = 1:6, 
+  #   background = clrs$Prism[6], color = "#ffffff", bold = TRUE
+  # )
+```
+
+
+```{r}
+modelsummary(
+  models,
+  statistic = "[{conf.low}, {conf.high}]",
+  fmt = 2,
+  coef_map = c(
+    `schoolSchool B:factor(year)2023` = "School B × 2023",
+    `I(school == "School B" & year >= 2023)TRUE` = "School B × 2023"
+  ),
+  gof_map = gof_map,
+  add_columns = tibble("True effect" = 10) |> magrittr::set_attr("position", 2)
+)
+```
+
+```{r}
+treatment_effects <- enframe(models) |> 
+  mutate(params = map(value, \(x) model_parameters(x))) |> 
+  unnest(params) |> 
+  filter(Parameter %in% c("schoolSchool B:factor(year)2023", 'I(school == "School B" & year >= 2023)TRUE')) |> 
+  mutate(name = factor(name, levels = names(models)))
+
+ggplot(treatment_effects, aes(x = Coefficient, y = fct_rev(name))) +
+  geom_vline(xintercept = 10, color = clrs$Prism[2]) +
+  geom_pointrange(aes(xmin = CI_low, xmax = CI_high)) +
+  labs(x = "Treatment effect", y = NULL) +
+  theme_np() +
+  theme(panel.grid.major.y = element_blank())
+```

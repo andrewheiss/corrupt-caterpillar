@@ -1,0 +1,57 @@
+---
+title: "Fuzzy RDD"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  fig.retina = 3,
+  dev = "ragg_png",
+  fig.align = "center",
+  out.width = "95%",
+  warning = FALSE,
+  collapse = TRUE,
+  cache.extra = 1234  # Change number to invalidate cache
+)
+
+options(
+  digits = 3, width = 120,
+  tinytable_tt_digits = 2
+)
+```
+
+```{r}
+#| label: packages-data
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(targets)
+library(modelsummary)
+library(tinytable)
+library(scales)
+library(ggdag)
+library(dagitty)
+library(parameters)
+
+tar_config_set(
+  store = here::here('_targets'),
+  script = here::here('_targets.R')
+)
+
+rdd <- tar_read(data_rdd_fuzzy)
+
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+set_annotation_fonts()
+
+gof_map <- tribble(
+  ~raw,            ~clean,               ~fmt, ~omit,
+  "nobs",          "N",                  0,    FALSE,
+  "r.squared",     "$R^2$",          2,    FALSE,
+  "adj.r.squared", "\\(R^2\\) adjusted", 2,    FALSE
+)
+```

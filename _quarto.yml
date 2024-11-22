@@ -31,7 +31,8 @@ website:
           - methods/observational.qmd
           - methods/rct.qmd
           - methods/diff-in-diff.qmd
-          - methods/rdd.qmd
+          - methods/rdd-sharp.qmd
+          - methods/rdd-fuzzy.qmd
           - methods/iv.qmd
     right:
       - icon: github

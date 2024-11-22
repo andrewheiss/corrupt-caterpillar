@@ -1,0 +1,222 @@
+---
+title: "Sharp RDD"
+---
+
+```{r}
+#| label: setup
+#| include: false
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.height = 6 * 0.618,
+  fig.retina = 3,
+  dev = "ragg_png",
+  fig.align = "center",
+  out.width = "95%",
+  warning = FALSE,
+  collapse = TRUE,
+  cache.extra = 1234  # Change number to invalidate cache
+)
+
+options(
+  digits = 3, width = 120,
+  tinytable_tt_digits = 2
+)
+```
+
+```{r}
+#| label: packages-data
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(targets)
+library(modelsummary)
+library(tinytable)
+library(scales)
+library(ggdag)
+library(dagitty)
+library(parameters)
+library(rdrobust)
+library(rddensity)
+
+tar_config_set(
+  store = here::here('_targets'),
+  script = here::here('_targets.R')
+)
+
+rdd <- tar_read(data_rdd_sharp)
+
+invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+set_annotation_fonts()
+
+gof_map <- tribble(
+  ~raw,            ~clean,               ~fmt, ~omit,
+  "nobs",          "N",                  0,    FALSE,
+  "r.squared",     "$R^2$",          2,    FALSE,
+  "adj.r.squared", "\\(R^2\\) adjusted", 2,    FALSE
+)
+```
+
+```{r}
+#| include: false
+#' Tidy a `rdrobust` regression discontinuity design object
+#'
+#' @param x A `rdrobust` object
+#' @param ... extra arguments (not used)
+#' @examples
+#' \dontrun{
+#' x <- runif(1000,-1,1)
+#' y <- 3 * x + 2 * (x>=0) + rnorm(1000)
+#' mod <- rdrobust(y,x)
+#' 
+#' tidy(mod)
+#' 
+#' glance(mod)
+#' }
+#' @export
+tidy.rdrobust <- function(object, ...){
+    ret <- tibble(term = row.names(object$coef), 
+                  estimate = object$coef[, 1], 
+                  std.error = object$se[, 1], 
+                  statistic = object$z[, 1],
+                  p.value = object$pv[, 1], 
+                  conf.low = object$ci[,1],
+                  conf.high = object$ci[, 2])
+    ret
+}
+
+#' Glance a `rdrobust` regression discontinuity design object
+#'
+#' @inheritParams tidy.rdrobust
+#' @export
+glance.rdrobust <- function(object, ...){
+    ret <- tibble(nobs.left = object$N[1],
+                  nobs.right = object$N[2],
+                  nobs.effective.left = object$N_h[1],
+                  nobs.effective.right = object$N_h[2],
+                  cutoff = object$c,
+                  order.regression = object$q,
+                  order.bias = object$q,
+                  kernel = object$kernel,
+                  bwselect = object$bwselect)
+    ret
+}
+```
+
+```{r}
+rdd |> 
+  ggplot(aes(
+    x = entrance_score, y = as.logical(experiential_learning), 
+    color = factor(experiential_learning)
+  )) +
+  geom_point(
+    size = 0.5, alpha = 0.5,
+    position = position_jitter(width = 0, height = 0.25, seed = 1234)
+  ) +
+  geom_vline(xintercept = 75) +
+  labs(
+    x = "Entrance test score", 
+    y = "Participated in\nexperiential learning program"
+  ) +
+  scale_color_manual(values = c(clrs$Prism[2], clrs$Prism[8]), guide = "none") +
+  theme_np()
+```
+
+```{r}
+ggplot(rdd, aes(x = entrance_score, fill = as.logical(experiential_learning))) +
+  geom_histogram(binwidth = 1, color = "white", boundary = 0) +
+  geom_vline(xintercept = 75) +
+  labs(x = "Entrance exam score", y = "Count", fill = "In program") +
+  scale_fill_manual(values = c(clrs$Prism[2], clrs$Prism[8])) +
+  theme_np()
+```
+
+```{r}
+test_density <- rddensity(rdd$entrance_score, c = 75)
+# summary(test_density)
+
+plot_density_test <- rdplotdensity(
+  rdd = test_density,
+  X = rdd$entrance_score,
+  type = "both"
+)
+```
+
+```{r}
+ggplot(rdd, aes(x = entrance_score, y = prosocial_index, color = as.logical(experiential_learning))) +
+  geom_point(size = 0.5, alpha = 0.5) +
+  geom_smooth(data = filter(rdd, entrance_score <= 75, entrance_score >= 70),
+              method = "lm", se = FALSE, linewidth = 2) +
+  geom_smooth(data = filter(rdd, entrance_score > 75, entrance_score <= 80),
+              method = "lm", se = FALSE, linewidth = 2) +
+  geom_vline(xintercept = 75.5) +
+  coord_cartesian(xlim = c(65, 85), ylim = c(60, 100)) +
+  labs(x = "Entrance test score", y = "Prosocial index", color = "Participated") +
+  scale_color_manual(values = c(clrs$Prism[2], clrs$Prism[8])) +
+  theme_np()
+```
+
+```{r}
+blah <- rdplot(y = rdd$prosocial_index, x = rdd$entrance_score, c = 75, hide = TRUE)
+blah$rdplot +
+  theme_np() +
+  labs(title = NULL, x = "Entrance test score", y = "Prosocial index")
+```
+
+
+```{r}
+#| warning: false
+model_rdrobust <- rdrobust(y = rdd$prosocial_index, x = rdd$entrance_score, c = 75)
+
+model_rdrobust |>
+  summary()
+
+tidy(model_rdrobust)
+```
+
+
+```{r}
+model_bw5 <- lm(
+  prosocial_index ~ entrance_score + experiential_learning,
+  data = filter(rdd, entrance_score >= (75 - 5) & entrance_score <= (75 + 5))
+)
+
+model_bw10 <- lm(
+  prosocial_index ~ entrance_score + experiential_learning,
+  data = filter(rdd, entrance_score >= (75 - 10) & entrance_score <= (75 + 10))
+)
+
+models <- list(
+  "BW = 5" = model_bw5,
+  "BW = 10" = model_bw10,
+  "rdrobust" = model_rdrobust
+)
+
+modelsummary(
+  models,
+  statistic = "[{conf.low}, {conf.high}]",
+  fmt = 2,
+  coef_map = c(
+    `experiential_learning` = "Experiential learning",
+    `Conventional` = "Experiential learning"
+  ),
+  gof_map = gof_map,
+  add_columns = tibble("True effect" = 8.5) |> magrittr::set_attr("position", 2)
+)
+```
+
+```{r}
+treatment_effects <- enframe(models) |> 
+  mutate(params = map(value, \(x) tidy(x, conf.int = TRUE))) |> 
+  unnest(params) |> 
+  filter(term %in% c("experiential_learning", "Conventional")) |> 
+  mutate(name = factor(name, levels = names(models)))
+
+ggplot(treatment_effects, aes(x = estimate, y = fct_rev(name))) +
+  geom_vline(xintercept = 8.5, color = clrs$Prism[2]) +
+  geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
+  labs(x = "Treatment effect", y = NULL) +
+  theme_np() +
+  theme(panel.grid.major.y = element_blank())
+```
