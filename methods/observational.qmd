@@ -292,7 +292,7 @@ ggplot(treatment_effects, aes(x = Coefficient, y = fct_rev(name))) +
   geom_vline(xintercept = 10, color = clrs$Prism[2]) +
   geom_pointrange(aes(xmin = CI_low, xmax = CI_high)) +
   labs(x = "Treatment effect", y = NULL) +
-  theme_np() +
+  theme_np(base_size = 16) +
   theme(panel.grid.major.y = element_blank())
 ```
 

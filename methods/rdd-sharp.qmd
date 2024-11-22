@@ -154,7 +154,7 @@ ggplot(rdd, aes(x = entrance_score, y = prosocial_index, color = as.logical(expe
   coord_cartesian(xlim = c(65, 85), ylim = c(60, 100)) +
   labs(x = "Entrance test score", y = "Prosocial index", color = "Participated") +
   scale_color_manual(values = c(clrs$Prism[2], clrs$Prism[8])) +
-  theme_np()
+  theme_np(base_size = 16)
 ```
 
 ```{r}
@@ -217,6 +217,6 @@ ggplot(treatment_effects, aes(x = estimate, y = fct_rev(name))) +
   geom_vline(xintercept = 8.5, color = clrs$Prism[2]) +
   geom_pointrange(aes(xmin = conf.low, xmax = conf.high)) +
   labs(x = "Treatment effect", y = NULL) +
-  theme_np() +
+  theme_np(base_size = 16) +
   theme(panel.grid.major.y = element_blank())
 ```
