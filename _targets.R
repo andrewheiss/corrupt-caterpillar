@@ -58,6 +58,7 @@ list(
   tar_target(data_rdd_fuzzy, make_rdd(n = 992, seed = 995303, fuzzy = TRUE)),
 
   ## Save data -----
+  # TODO: Use static/dynamic branching here instead of this gross repetitive mess
   tar_target(
     data_observational_rds, 
     save_r(data_observational, here_rel("data", "simulated_data", "observational.rds")),
