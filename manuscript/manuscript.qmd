@@ -88,6 +88,7 @@ tar_config_set(
 
 # Plotting functions
 invisible(list2env(tar_read(graphic_functions), .GlobalEnv))
+set_annotation_fonts()
 ```
 
 ```{=latex}
@@ -223,11 +224,13 @@ ggplot(data_confounder_example, aes(x = x, y = y, xend = xend, yend = yend)) +
     data = filter(data_confounder_example, name == "Z"), aes(label = label), 
     size = 4, nudge_y = 0.25, color = "black", lineheight = 1
   ) +
-  scale_color_manual(values = c("X" = clrs$green, "Y" = clrs$blue, "Z" = clrs$yellow), guide = "none") +
+  scale_color_manual(values = c("X" = clrs$Prism[4], "Y" = clrs$Prism[2], "Z" = clrs$Prism[6]), guide = "none") +
   coord_cartesian(xlim = c(0.75, 3.25), ylim = c(0.6, 2.2)) +
   theme_np_dag()
 ```
 
+
+DAGs force researchers to be explicit about their beliefs regarding the relationships between each variable and whether causal relationships do or do not exist (TODO UGH this is a gross sentence)
 
 Importantly, DAGs do more than simply represent the relationships and associations between variables. They provide us with ways to isolate specific relationships of interest. TODO: Rohrer, 28: Even if a researcher does not rely fully on a DAG, mapping out the underlying data-generating process 
 
@@ -253,7 +256,7 @@ data_confounder <- dagify(
                 y = c(X = 1, Y = 1, Z = 2))
 ) |> 
   tidy_dagitty() |> 
-  mutate(arrow_color = ifelse(name == "Z", clrs$orange, "grey80")) |> 
+  mutate(arrow_color = ifelse(name == "Z", clrs$Prism[7], "grey80")) |> 
   mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
 
 confounder <- ggplot(data_confounder, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -261,11 +264,11 @@ confounder <- ggplot(data_confounder, aes(x = x, y = y, xend = xend, yend = yend
   geom_dag_point(aes(color = node_color), size = 12) +
   geom_dag_text(data = filter(data_confounder, name != "Z"), size = 4) +
   geom_dag_text(data = filter(data_confounder, name == "Z"), color = "white", size = 4) +
-  scale_color_manual(values = c("grey80", clrs$orange), guide = "none") +
+  scale_color_manual(values = c("grey80", clrs$Prism[7]), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
   labs(title = "Confounder") +
   theme_np_dag() +
-  theme(plot.title = element_text(hjust = 0.5, color = clrs$orange))
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$Prism[7]))
 
 data_mediator <- dagify(
   Y ~ X + Z,
@@ -275,8 +278,8 @@ data_mediator <- dagify(
 ) |> 
   tidy_dagitty() |> 
   mutate(arrow_color = case_when(
-    name == "Z" & to == "Y" ~ clrs$purple, 
-    name == "X" & to == "Z" ~ clrs$purple,
+    name == "Z" & to == "Y" ~ clrs$Prism[1], 
+    name == "X" & to == "Z" ~ clrs$Prism[1],
     TRUE ~ "grey80")) |> 
   mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
 
@@ -285,11 +288,11 @@ mediator <- ggplot(data_mediator, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_point(aes(color = node_color), size = 12) +
   geom_dag_text(data = filter(data_mediator, name != "Z"), size = 4) +
   geom_dag_text(data = filter(data_mediator, name == "Z"), color = "white", size = 4) +
-  scale_color_manual(values = c("grey80", clrs$purple), guide = "none") +
+  scale_color_manual(values = c("grey80", clrs$Prism[1]), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
   labs(title = "Mediator") +
   theme_np_dag() +
-  theme(plot.title = element_text(hjust = 0.5, color = clrs$purple))
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$Prism[1]))
 
 data_collider <- dagify(
   Y ~ X,
@@ -298,7 +301,7 @@ data_collider <- dagify(
                 y = c(X = 1, Y = 1, Z = 2))
 ) |> 
   tidy_dagitty() |> 
-  mutate(arrow_color = ifelse(to == "Z", clrs$red, "grey80")) |> 
+  mutate(arrow_color = ifelse(to == "Z", clrs$Prism[8], "grey80")) |> 
   mutate(node_color = ifelse(name == "Z", TRUE, FALSE)) 
 
 collider <- ggplot(data_collider, aes(x = x, y = y, xend = xend, yend = yend)) +
@@ -306,11 +309,11 @@ collider <- ggplot(data_collider, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_point(aes(color = node_color), size = 12) +
   geom_dag_text(data = filter(data_collider, name != "Z"), size = 4) +
   geom_dag_text(data = filter(data_collider, name == "Z"), color = "white", size = 4) +
-  scale_color_manual(values = c("grey80", clrs$red), guide = "none") +
+  scale_color_manual(values = c("grey80", clrs$Prism[8]), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
   labs(title = "Collider") +
   theme_np_dag() +
-  theme(plot.title = element_text(hjust = 0.5, color = clrs$red))
+  theme(plot.title = element_text(hjust = 0.5, color = clrs$Prism[8]))
 
 combined_associations <- (confounder | plot_spacer() | mediator | plot_spacer() | collider) +
   plot_layout(widths = c(0.32, 0.02, 0.32, 0.02, 0.32))
@@ -325,6 +328,12 @@ This stuff in @fig-dag-associations: (@Elwert:2013 for forks, chains, inverted f
 
 Confounding is a major scary issue though - especially if it's unmeasured or unobservable…
 
+
+Experiential learning → community connections → long-term pro-social outcomes
+
+Experiential learning → MPA students ← Pro-social behaviors
+
+Collider bias is often seen as a form of selection bias, leading to results that are not generalizable to other contexts. Colliders can lead to bias beyond issues of selection, though. KnoxLoweMummolo use a DAG to argue that police stops, race, administrative records, etc. 
 
 ## Bad controls
 
@@ -450,15 +459,15 @@ data_rct <- dagify(
 ) |> 
   tidy_dagitty() |> 
   node_status() |> 
-  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
+  mutate(arrow_color = ifelse(name == "X", clrs$Prism[8], "grey80"))
 
 rct <- ggplot(data_rct, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
   geom_dag_point(aes(color = status), size = 12) +
   geom_dag_text(size = 4) +
   annotate(geom = "text", x = 1, y = 1.2, label = "X = x") +
-  scale_color_manual(values = c(clrs$green, clrs$blue), 
-                     na.value = clrs$yellow, guide = "none") +
+  scale_color_manual(values = c(clrs$Prism[4], clrs$Prism[2]), 
+                     na.value = clrs$Prism[6], guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
   labs(title = "Randomization", 
        subtitle = "Randomization deletes all arrows into X") +
@@ -477,14 +486,14 @@ data_iv <- dagify(Y ~ X + U,
   tidy_dagitty() |> 
   adjust_for(var = "I") |> 
   node_status() |> 
-  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
+  mutate(arrow_color = ifelse(name == "X", clrs$Prism[8], "grey80"))
 
 iv <- ggplot(data_iv, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
   geom_dag_point(aes(color = status, shape = adjusted), size = 12) +
   geom_dag_text(size = 4) +
-  scale_color_manual(values = c(clrs$green, "grey80", clrs$blue), 
-                     na.value = clrs$yellow, guide = "none") +
+  scale_color_manual(values = c(clrs$Prism[4], "grey80", clrs$Prism[2]), 
+                     na.value = clrs$Prism[6], guide = "none") +
   scale_shape_manual(values = c(15, 19), guide = "none") +
   coord_cartesian(ylim = c(0.95, 2.05)) +
   labs(title = "Instrumental variable", 
@@ -503,7 +512,7 @@ data_diff_diff <- dagify(Y ~ X + Time + Location,
   tidy_dagitty() |> 
   adjust_for(var = c("Time", "Location")) |> 
   node_status() |> 
-  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"))
+  mutate(arrow_color = ifelse(name == "X", clrs$Prism[8], "grey80"))
 
 diff_diff <- ggplot(data_diff_diff, aes(x = x, y = y, xend = xend, yend = yend)) +
   geom_dag_edges(aes(edge_colour = arrow_color), edge_width = 1) +
@@ -513,8 +522,8 @@ diff_diff <- ggplot(data_diff_diff, aes(x = x, y = y, xend = xend, yend = yend))
                 nudge_y = 0.37, size = 4) +
   geom_dag_text(data = filter(data_diff_diff, name == "Time"), 
                 nudge_y = -0.37, size = 4) +
-  scale_color_manual(values = c(clrs$green, clrs$blue), 
-                     na.value = clrs$yellow, guide = "none") +
+  scale_color_manual(values = c(clrs$Prism[4], clrs$Prism[2]), 
+                     na.value = clrs$Prism[6], guide = "none") +
   scale_shape_manual(values = c(15, 19), guide = "none") +
   coord_cartesian(ylim = c(-0.05, 2.05)) +
   labs(title = "Difference-in-differences", 
@@ -536,7 +545,7 @@ data_rdd <- dagify(Y ~ X + Running + U,
   tidy_dagitty() |> 
   adjust_for(var = c("Threshold", "Running")) |> 
   node_status() |> 
-  mutate(arrow_color = ifelse(name == "X", clrs$red, "grey80"),
+  mutate(arrow_color = ifelse(name == "X", clrs$Prism[8], "grey80"),
          name = recode(name, "Running" = "Running\nvariable"),
          linetype = ifelse(name == "U" & to == "X", "21", "solid"))
 
@@ -548,8 +557,8 @@ rdd <- ggplot(data_rdd, aes(x = x, y = y, xend = xend, yend = yend)) +
                 nudge_y = -0.47, size = 4, lineheight = 1) +
   geom_dag_text(data = filter(data_rdd, name == "Threshold"),
                 nudge_y = -0.35, size = 4) +
-  scale_color_manual(values = c(clrs$green, "grey80", clrs$blue), 
-                     na.value = clrs$yellow, guide = "none") +
+  scale_color_manual(values = c(clrs$Prism[4], "grey80", clrs$Prism[2]), 
+                     na.value = clrs$Prism[6], guide = "none") +
   scale_shape_manual(values = c(15, 19), guide = "none") +
   coord_cartesian(ylim = c(0.95, 3.05)) +
   labs(title = "Regression discontinuity", 
