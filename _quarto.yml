@@ -26,6 +26,8 @@ website:
     pinned: true
     left:
       - causal-studies-over-time.qmd
+      - text: "Presentations"
+        file: presentations/index.qmd
       - text: "Methods"
         menu:
           - methods/observational.qmd

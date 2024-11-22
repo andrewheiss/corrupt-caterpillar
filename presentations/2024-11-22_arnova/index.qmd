@@ -1,0 +1,16 @@
+---
+title: "ARNOVA"
+date: 2024-11-22
+toc: false
+resources: slides
+abstract: |
+  Annual conference of the Association for Research on Nonprofit Organizations and Voluntary Action (ARNOVA); Washington, D.C.
+abstract-title: "Location"
+published-title: "Presented"
+image: first-slide.png
+page-layout: full
+---
+
+<div class="ratio ratio-16x9">
+<iframe class="slide-deck" src="https://docs.google.com/presentation/d/e/2PACX-1vRTS3Uve-PLfIOJjtIFIQgMFz1Zs3HhArdtNvgFd6VGnA_kuxqrRelNHHE2Tv4CFRty77ZB5EdkNRon/embed?start=false&loop=false&delayms=3000" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+</div>
