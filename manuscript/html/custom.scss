@@ -1,9 +1,43 @@
 @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@200..800&display=swap');
 
 /*-- scss:defaults --*/
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #ddd !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #868e96 !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
 
-$font-family-sans-serif: Assistant, sans-serif !default;
+// Prism colors
+// rcartocolor::carto_pal(n = 12, "Prism")
+$blue:   #1D6996 !default;  // Prism[2]
+$indigo: #5F4690 !default;  // Prism[1]
+$purple: #6F4070 !default;  // Prism[11]
+$pink:   #94346E !default;  // Prism[9]
+$red:    #CC503E !default;  // Prism[8]
+$orange: #E17C05 !default;  // Prism[7]
+$yellow: #EDAD08 !default;  // Prism[6]
+$green:  #0F8554 !default;  // Prism[4]
+$teal:   #38A6A5 !default;  // Prism[3]
+$cyan:   #73AF48 !default;  // Prism[5]
 
+$primary:       $blue !default;
+$secondary:     $gray-500 !default;
+$success:       $green !default;
+$info:          $pink !default;
+$warning:       $yellow !default;
+$danger:        $red !default;
+$light:         $gray-100 !default;
+$dark:          $gray-800 !default;
+
+$font-family-sans-serif: 'Assistant', sans-serif;
+
+$link-color: $orange;
 
 /*-- scss:rules --*/
 

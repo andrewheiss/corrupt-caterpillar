@@ -28,7 +28,7 @@ format:
     theme: 
       - zephyr
       - html/custom.scss
-    title-block-banner: "#000D51"
+    title-block-banner: "primary"
     include-in-header:
       - text: |
           <style type="text/css">
