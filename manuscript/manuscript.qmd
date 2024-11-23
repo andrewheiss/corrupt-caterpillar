@@ -1,7 +1,7 @@
 ---
 title: "Clarifying Correlation and Causation: A Guide to Modern Quantitative Causal Inference in Nonprofit Studies"
 short-title: "Clarifying Correlation and Causation"
-date: 2024-11-08
+date: 2024-11-22
 author:
 - name: Andrew Heiss
   affiliations: 
@@ -146,7 +146,7 @@ Instead, we address the perennial caveat taught in introductory statistics class
 
 ---
 
-# Why care about causation in nonprofit studies? (MENG)
+# Why care about causation in nonprofit studies?
 
 Graph and analysis of causal stuff in top 3 here
 

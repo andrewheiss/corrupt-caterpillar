@@ -36,6 +36,10 @@ website:
           - methods/rdd-sharp.qmd
           - methods/rdd-fuzzy.qmd
           - methods/iv.qmd
+      - text: "Paper"
+        menu:
+          - file: paper/index.qmd
+          - file: paper/appendix.qmd
     right:
       - icon: github
         href: "https://github.com/andrewheiss/corrupt-caterpillar"

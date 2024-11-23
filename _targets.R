@@ -38,6 +38,9 @@ here_rel <- function(...) {fs::path_rel(here::here(...))}
 # the pipeline
 tar_source()
 
+# Set some conditional flags
+should_deploy <- identical(Sys.getenv("UPLOAD_WEBSITES"), "TRUE")
+
 
 # Pipeline ----------------------------------------------------------------
 
@@ -108,6 +111,17 @@ list(
 
   ## Manuscript targets ----
   tar_quarto(manuscript, path = "manuscript", working_directory = "manuscript", quiet = FALSE),
+
+  ## Website targets ----
+  tar_quarto(website, path = ".", quiet = FALSE),
+
+  tar_target(deploy_script, here_rel("deploy.sh"), format = "file", cue = tar_cue_skip(!should_deploy)),
+  tar_target(deploy, {
+    # Force a dependency
+    website
+    # Run the deploy script
+    if (should_deploy) processx::run(paste0("./", deploy_script))
+  }, cue = tar_cue_skip(!should_deploy)),
 
   ## Render the README ----
   tar_quarto(readme, here_rel("README.qmd"))

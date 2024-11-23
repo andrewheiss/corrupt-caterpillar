@@ -102,7 +102,7 @@ format:
 
   # Manuscript-y PDF output
   hikmah-manuscript-pdf+ms:
-    output-file: heiss-ye-causation-thing.pdf
+    output-file: heiss-ye-causation-ms.pdf
     left-aligned: true
     endnotes: false
 
