@@ -1,7 +1,7 @@
 ---
 title: "Clarifying Correlation and Causation: A Guide to Modern Quantitative Causal Inference in Nonprofit Studies"
 short-title: "Clarifying Correlation and Causation"
-date: 2024-11-22
+date: 2025-04-24
 author:
 - name: Andrew Heiss
   affiliations: 
@@ -25,14 +25,11 @@ author:
   orcid: 0000-0002-6552-8338
 correspondence-prefix: "Correspondence concerning this article should be addressed to"
 published: Drafting
-abstract: |
+abstract11: |
   Discovering causal relationships and testing theoretical mechanisms is a core endeavor of social science. Randomized experiments have long served as a gold standard for making valid causal inferences, but most of the data social scientists work with is observational and non-experimental. However, with newer methodological developments in economics, political science, epidemiology, and other disciplines, an increasing number of studies in social science make causal claims with observational data. As a newer interdisciplinary field, however, nonprofit studies has lagged behind other disciplines in its use of observational causal inference. In this paper, we present a hands-on introduction and guide to design-based observational causal inference methods. We first review and categorize all studies making causal claims in top nonprofit studies journals over the past decade to illustrate the field’s current of experimental and observational approaches to causal inference. We then introduce a framework for modeling and identifying causal processes using directed acyclic graphs (DAGs) and provide a walk-through of the assumptions and procedures for making inferences with a range of different methods, including matching, inverse probability weighting, difference-in-differences, regression discontinuity designs, and instrumental variables. We illustrate each approach with synthetic and empirical examples and provide sample R and Stata code for implementing these methods. We conclude by encouraging scholars and practitioners to make more careful and explicit causal claims in their observational empirical research, collectively developing and improving quantitative work in the broader field of nonprofit studies.
 thanks: |
   Acknowledgments here if any
-epigraph:
-  - text: "Don't let us forget that the causes of human actions are usually immeasurably more complex and varied than our subsequent explanations of them."
-    source: "Fyodor Dostoevsky, *The Idiot*, part IV, chapter 2"
-keywords:
+keywords11:
   - those
   - go
   - here
@@ -109,6 +106,10 @@ set_annotation_fonts()
 # Introduction {.hide}
 :::
 
+{{< epigraph "Scientia et potentia humana in idem coincidunt, quia ignoratio causae destituit effectum. *(Human knowledge and human power meet in one; for where the cause is not known the effect cannot be produced.)*" source="Francis Bacon, *Novum Organum*, part I, aphorism III" >}}
+
+{{< epigraph "Don't let us forget that the causes of human actions are usually immeasurably more complex and varied than our subsequent explanations of them." source="Fyodor Dostoevsky, *The Idiot*, part IV, chapter 2" >}}
+
 Causal inference important in social sciences, but hard. Nobel prize for Angrist and Imbens and gang...
 
 Answering causal questions is an important endeavor for nonprofit researchers and practitioners. Nonprofits serve social goals and create and implement a range of programs to accomplish those goals. Measuring the impact of nonprofit programming is essential both for grantors that require evidence of program impact and for nonprofit program managers who are interested in whether their programs lead to the desired outcomes.
@@ -142,7 +143,20 @@ Similar to recent work by @BaBerrettCoupet:2021 and @MaEbeiddeWit:2023 and @Rohr
 
 Importantly, in this article with are concerned only with *quantitative* causal inference, or the use of statistical approaches to identify and isolate causal mechanisms. We do not assert that quantitative methods are the only avenue for answering causal questions. Qualitative and mixed methods like focus groups, action research, ___, ___, and ___ are designed to explore causal mechanisms with rich detail (@cite1). Some qualitative methods are at epistemological odds with the whole endeavor of causal effects (@cite2). 
 
+Qualitative case studies: Rohlfing:2012, GeorgeBennett:2005, BennettCheckel:2015
+
 Instead, we address the perennial caveat taught in introductory statistics classes: that correlation does not imply causation. What *does* imply causation? How can we use statistical tools to explore causal questions using observational data?
+
+---
+
+From thread by Stephen Wild (https://bsky.app/profile/stephenjwild.bsky.social/post/3ldhouhkcsk2z)
+
+- Causal inference is hard: https://www.nature.com/articles/s41562-024-01939-z
+- Always clearly define your estimand: https://journals.sagepub.com/doi/10.1177/00031224211004187
+- Threats to validity (with DAGs): https://journals.lww.com/epidem/fulltext/2020/05000/A_Graphical_Catalog_of_Threats_to_Validity_.11.aspx
+- Crash course in good and bad controls: https://journals.sagepub.com/doi/full/10.1177/00491241221099552
+- Need to think about causality when selecting control variables: https://journals.sagepub.com/doi/full/10.1177/25152459221095823
+- Conditioning on colliders is generally bad: https://www.annualreviews.org/content/journals/10.1146/annurev-soc-071913-043455
 
 ---
 
@@ -342,6 +356,8 @@ Even if we do not rely on a DAG for complete identification of causal effects, m
 In addition to identification, DAGs provide additional statistical insight and guidance regarding control variables or covariates in regression models
 
 Bad controls and colliders
+
+For example, in 2022, using a large national-level observational dataset, researchers found an association between smoking behavior and reduced COVID-19 risk: people who smoked regularly saw a sigificantly reduction in the probability of contracting severe COVID-19. However, this paradoxical finding can be explained with collider bias [@AuYeungKwok:2022]. The dataset contained information about hospital patients who were (1) smokers diagnosed with COVID, (2) smokers diagnosed with smoking-related respiratory disease, and (3) non-smokers diagnosed with COVID. The data did not contain any patients who were non-smokers diagnosed with non-COVID, smoking-related respiratory disease, as these people were not patients and needed no medical treatment. In DAG terms, presence at the hospital was a collider (Smoking → Hospital ← Severe COVID), and conditioning the estimate of Smoking → Severe COVID on being a patient therefore distorted and biased the measured effect.
 
 Good/bad controls: <https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3689437> - <https://twitter.com/analisereal/status/1512596580632707078>
 
